@@ -803,7 +803,7 @@ async function doSearch() {
     // Graph API: search messages
     const encoded = encodeURIComponent(q);
     const data = await graphGet(
-      `/me/messages?$search="${encoded}"&$top=25&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments&$orderby=receivedDateTime desc`
+      `/me/messages?$search="${encoded}"&$top=25&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments`
     );
 
     finishProgress();
