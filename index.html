@@ -372,7 +372,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.3</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.4</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -1100,8 +1100,11 @@ async function extractTodos() {
   const btn = document.getElementById('todoExtractBtn');
   if (btn) btn.style.opacity = '.5';
 
-  if (!config.claudeKey) {
-    // APIキーなし → 即座に簡易抽出
+  // claudeKeyが設定されてへんかったら即座に簡易抽出するで
+  const savedConfig = JSON.parse(localStorage.getItem('spamkun_config') || '{}');
+  const claudeKey = config.claudeKey || savedConfig.claudeKey || '';
+
+  if (!claudeKey) {
     extractTodosSimple();
     return;
   }
