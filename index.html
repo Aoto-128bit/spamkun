@@ -372,7 +372,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.4</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.5</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -469,37 +469,48 @@
               <path d="M93 156 L96.5 159.5 L103 153" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
               <!-- 腕 -->
               <rect x="4" y="108" width="28" height="52" rx="14" fill="#003087"/>
-              <g class="prubot-anim-wave"><rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/><circle cx="148" cy="164" r="14" fill="#fff" filter="drop-shadow(0 2px 6px rgba(0,0,0,.14))"/><circle cx="148" cy="164" r="9" stroke="#003087" stroke-width="2.5" fill="none"/><line x1="154" y1="170" x2="160" y2="177" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/></g>
+              <g class="prubot-anim-wave"><rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/><circle cx="148" cy="164" r="14" fill="#fff"/><circle cx="148" cy="164" r="9" stroke="#003087" stroke-width="2.5" fill="none"/><line x1="154" y1="170" x2="160" y2="177" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/></g>
               <!-- 頭 -->
               <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
-              <rect x="38" y="34" width="84" height="32" rx="18" fill="#1a4da0" opacity=".4"/>
               <circle cx="30" cy="70" r="8" fill="#002570"/><circle cx="30" cy="70" r="4" fill="#FFD700"/>
               <circle cx="130" cy="70" r="8" fill="#002570"/><circle cx="130" cy="70" r="4" fill="#FFD700"/>
-              <!-- 顔面 -->
-              <rect x="42" y="44" width="76" height="56" rx="18" fill="#e8f0fe"/>
-              <!-- 画太郎風：極太眉毛（左） -->
-              <rect x="48" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
-              <rect x="46" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(-8 46 50)"/>
-              <!-- 画太郎風：極太眉毛（右） -->
-              <rect x="86" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
-              <rect x="100" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(8 100 50)"/>
-              <!-- 画太郎風：ギョロ目（左）白目大きめ -->
-              <circle cx="62" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
-              <circle cx="64" cy="71" r="8" fill="#1a1a2e"/>
-              <circle cx="66" cy="68" r="2.5" fill="#fff"/>
-              <circle cx="61" cy="74" r="1.2" fill="#fff" opacity=".6"/>
-              <!-- 画太郎風：ギョロ目（右）白目大きめ -->
-              <circle cx="98" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
-              <circle cx="96" cy="71" r="8" fill="#1a1a2e"/>
-              <circle cx="94" cy="68" r="2.5" fill="#fff"/>
-              <circle cx="99" cy="74" r="1.2" fill="#fff" opacity=".6"/>
-              <!-- 画太郎風：への字口（不満顔） -->
-              <path d="M63 88 Q80 82 97 88" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-              <!-- 鼻（小さい点） -->
-              <ellipse cx="80" cy="80" rx="3" ry="2" fill="#8ba3c4" opacity=".5"/>
+              <!-- 顔面（明るめ） -->
+              <rect x="42" y="38" width="76" height="62" rx="18" fill="#f0e8d0"/>
+              <!-- ボサボサ頭髪（画太郎風） -->
+              <path d="M42 48 Q35 20 55 18 Q60 10 70 14 Q78 6 88 10 Q98 4 108 14 Q118 10 122 28 Q118 38 110 42" stroke="#1a1a2e" stroke-width="3" fill="#2a2a2a" stroke-linecap="round"/>
+              <path d="M44 44 Q38 28 48 22" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+              <path d="M55 18 Q52 8 58 10" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+              <path d="M72 12 Q70 4 76 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+              <path d="M90 10 Q92 2 96 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+              <path d="M108 16 Q114 8 116 16" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+              <!-- 極太眉毛（画太郎風・つり上がり） -->
+              <path d="M46 54 Q58 46 72 50" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <path d="M88 50 Q102 46 114 54" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <!-- 飛び出し目玉（左） -->
+              <ellipse cx="62" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
+              <circle cx="63" cy="69" r="9" fill="#1a1a2e"/>
+              <circle cx="66" cy="65" r="3.5" fill="#fff"/>
+              <circle cx="60" cy="72" r="1.5" fill="#fff" opacity=".7"/>
+              <!-- 飛び出し目玉（右） -->
+              <ellipse cx="98" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
+              <circle cx="97" cy="69" r="9" fill="#1a1a2e"/>
+              <circle cx="94" cy="65" r="3.5" fill="#fff"/>
+              <circle cx="100" cy="72" r="1.5" fill="#fff" opacity=".7"/>
+              <!-- 大きく開いた口（画太郎風） -->
+              <path d="M58 86 Q62 82 80 82 Q98 82 102 86 Q102 98 80 100 Q58 98 58 86Z" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1"/>
+              <!-- 歯 -->
+              <rect x="63" y="82" width="8" height="7" rx="2" fill="#fff"/>
+              <rect x="74" y="82" width="8" height="8" rx="2" fill="#fff"/>
+              <rect x="85" y="82" width="8" height="7" rx="2" fill="#fff"/>
+              <rect x="66" y="94" width="7" height="6" rx="2" fill="#fff" opacity=".8"/>
+              <rect x="77" y="95" width="7" height="5" rx="2" fill="#fff" opacity=".8"/>
+              <!-- 鼻（でかめ） -->
+              <ellipse cx="80" cy="79" rx="5" ry="3.5" fill="#c9a882"/>
+              <circle cx="77" cy="80" r="1.5" fill="#a07850"/>
+              <circle cx="83" cy="80" r="1.5" fill="#a07850"/>
               <!-- アンテナ -->
-              <rect x="77" y="6" width="6" height="28" rx="3" fill="#5b7bb8"/>
-              <g class="prubot-anim-antenna"><rect x="62" y="0" width="36" height="22" rx="6" fill="#FFD700"/><path d="M62 8 L80 16 L98 8" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <rect x="77" y="16" width="6" height="24" rx="3" fill="#5b7bb8"/>
+              <g class="prubot-anim-antenna"><rect x="62" y="8" width="36" height="22" rx="6" fill="#FFD700"/><path d="M62 16 L80 24 L98 16" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
               <!-- ネームプレート -->
               <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
               <text x="80" y="183" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
@@ -568,24 +579,39 @@
       <rect x="4" y="108" width="28" height="52" rx="14" fill="#003087"/>
       <rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/>
       <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
-      <rect x="42" y="44" width="76" height="56" rx="18" fill="#e8f0fe"/>
-      <!-- 画太郎風：極太眉毛 -->
-      <rect x="48" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
-      <rect x="46" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(-8 46 50)"/>
-      <rect x="86" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
-      <rect x="100" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(8 100 50)"/>
-      <!-- 画太郎風：ギョロ目 -->
-      <circle cx="62" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
-      <circle cx="64" cy="71" r="8" fill="#1a1a2e"/>
-      <circle cx="66" cy="68" r="2.5" fill="#fff"/>
-      <circle cx="98" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
-      <circle cx="96" cy="71" r="8" fill="#1a1a2e"/>
-      <circle cx="94" cy="68" r="2.5" fill="#fff"/>
-      <!-- への字口 -->
-      <path d="M63 88 Q80 82 97 88" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <ellipse cx="80" cy="80" rx="3" ry="2" fill="#8ba3c4" opacity=".5"/>
-      <rect x="77" y="6" width="6" height="28" rx="3" fill="#5b7bb8"/>
-      <g class="prubot-anim-antenna"><rect x="62" y="0" width="36" height="22" rx="6" fill="#FFD700"/></g>
+      <circle cx="30" cy="70" r="8" fill="#002570"/><circle cx="30" cy="70" r="4" fill="#FFD700"/>
+      <circle cx="130" cy="70" r="8" fill="#002570"/><circle cx="130" cy="70" r="4" fill="#FFD700"/>
+      <!-- 顔面 -->
+      <rect x="42" y="38" width="76" height="62" rx="18" fill="#f0e8d0"/>
+      <!-- ボサボサ髪 -->
+      <path d="M42 48 Q35 20 55 18 Q60 10 70 14 Q78 6 88 10 Q98 4 108 14 Q118 10 122 28 Q118 38 110 42" stroke="#1a1a2e" stroke-width="3" fill="#2a2a2a" stroke-linecap="round"/>
+      <path d="M55 18 Q52 8 58 10" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+      <path d="M72 12 Q70 4 76 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+      <path d="M90 10 Q92 2 96 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+      <!-- 極太眉 -->
+      <path d="M46 54 Q58 46 72 50" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M88 50 Q102 46 114 54" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <!-- 飛び出し目玉 -->
+      <ellipse cx="62" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
+      <circle cx="63" cy="69" r="9" fill="#1a1a2e"/>
+      <circle cx="66" cy="65" r="3.5" fill="#fff"/>
+      <ellipse cx="98" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
+      <circle cx="97" cy="69" r="9" fill="#1a1a2e"/>
+      <circle cx="94" cy="65" r="3.5" fill="#fff"/>
+      <!-- 大口 -->
+      <path d="M58 86 Q62 82 80 82 Q98 82 102 86 Q102 98 80 100 Q58 98 58 86Z" fill="#1a1a2e"/>
+      <rect x="63" y="82" width="8" height="7" rx="2" fill="#fff"/>
+      <rect x="74" y="82" width="8" height="8" rx="2" fill="#fff"/>
+      <rect x="85" y="82" width="8" height="7" rx="2" fill="#fff"/>
+      <rect x="66" y="94" width="7" height="6" rx="2" fill="#fff" opacity=".8"/>
+      <rect x="77" y="95" width="7" height="5" rx="2" fill="#fff" opacity=".8"/>
+      <!-- 鼻 -->
+      <ellipse cx="80" cy="79" rx="5" ry="3.5" fill="#c9a882"/>
+      <circle cx="77" cy="80" r="1.5" fill="#a07850"/>
+      <circle cx="83" cy="80" r="1.5" fill="#a07850"/>
+      <!-- アンテナ -->
+      <rect x="77" y="16" width="6" height="24" rx="3" fill="#5b7bb8"/>
+      <g class="prubot-anim-antenna"><rect x="62" y="8" width="36" height="22" rx="6" fill="#FFD700"/></g>
       <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
       <text x="80" y="183" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
     </svg>
@@ -1013,10 +1039,22 @@ async function renderMessage(msg, container) {
   try {
     const full = await graphGet(`/me/messages/${msg.id}?$select=body`);
     if (full.body?.content) {
-      // Strip HTML tags
-      const tmp = document.createElement('div');
-      tmp.innerHTML = full.body.content;
-      body = tmp.textContent || tmp.innerText || body;
+      if (full.body.contentType === 'html') {
+        // HTMLメールはテキスト変換するで
+        const tmp = document.createElement('div');
+        tmp.innerHTML = full.body.content;
+        // style/script/headタグを除去
+        tmp.querySelectorAll('style, script, head').forEach(el => el.remove());
+        // 改行タグをスペースに
+        tmp.querySelectorAll('br').forEach(el => el.replaceWith('\n'));
+        tmp.querySelectorAll('p, div, tr').forEach(el => el.prepend('\n'));
+        body = (tmp.textContent || tmp.innerText || body)
+          .replace(/\n{3,}/g, '\n\n')  // 連続改行を圧縮
+          .replace(/[ \t]{2,}/g, ' ')   // 連続スペースを圧縮
+          .trim();
+      } else {
+        body = full.body.content;
+      }
     }
   } catch {}
 
