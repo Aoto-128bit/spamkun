@@ -372,6 +372,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.3</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -450,11 +451,14 @@
         <div class="search-card-mascot">
           <div class="prubot-anim-float">
             <svg width="88" height="121" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+              <!-- 影 -->
               <ellipse cx="80" cy="214" rx="38" ry="6" fill="#003087" opacity=".12"/>
+              <!-- 足 -->
               <rect x="52" y="182" width="22" height="28" rx="11" fill="#002570"/>
               <rect x="86" y="182" width="22" height="28" rx="11" fill="#002570"/>
               <rect x="46" y="202" width="30" height="14" rx="7" fill="#003087"/>
               <rect x="84" y="202" width="30" height="14" rx="7" fill="#003087"/>
+              <!-- 胴体 -->
               <rect x="28" y="100" width="104" height="92" rx="22" fill="#003087"/>
               <rect x="35" y="106" width="90" height="40" rx="14" fill="#1a4da0" opacity=".5"/>
               <rect x="48" y="124" width="64" height="44" rx="10" fill="#fff" opacity=".92"/>
@@ -463,18 +467,40 @@
               <path d="M48 134 L80 152 L112 134" stroke="#003087" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
               <circle cx="98" cy="156" r="10" fill="#16a34a"/>
               <path d="M93 156 L96.5 159.5 L103 153" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- 腕 -->
               <rect x="4" y="108" width="28" height="52" rx="14" fill="#003087"/>
               <g class="prubot-anim-wave"><rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/><circle cx="148" cy="164" r="14" fill="#fff" filter="drop-shadow(0 2px 6px rgba(0,0,0,.14))"/><circle cx="148" cy="164" r="9" stroke="#003087" stroke-width="2.5" fill="none"/><line x1="154" y1="170" x2="160" y2="177" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/></g>
+              <!-- 頭 -->
               <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
               <rect x="38" y="34" width="84" height="32" rx="18" fill="#1a4da0" opacity=".4"/>
               <circle cx="30" cy="70" r="8" fill="#002570"/><circle cx="30" cy="70" r="4" fill="#FFD700"/>
               <circle cx="130" cy="70" r="8" fill="#002570"/><circle cx="130" cy="70" r="4" fill="#FFD700"/>
+              <!-- 顔面 -->
               <rect x="42" y="44" width="76" height="56" rx="18" fill="#e8f0fe"/>
-              <g class="prubot-anim-eye"><circle cx="62" cy="68" r="12" fill="#fff"/><circle cx="62" cy="68" r="7" fill="#003087"/><circle cx="65" cy="65" r="2.5" fill="#fff"/><ellipse cx="52" cy="80" rx="7" ry="4" fill="#fda4af" opacity=".6"/></g>
-              <g class="prubot-anim-eye"><circle cx="98" cy="68" r="12" fill="#fff"/><circle cx="98" cy="68" r="7" fill="#003087"/><circle cx="101" cy="65" r="2.5" fill="#fff"/><ellipse cx="108" cy="80" rx="7" ry="4" fill="#fda4af" opacity=".6"/></g>
-              <path d="M68 85 Q80 93 92 85" stroke="#003087" stroke-width="2.5" stroke-linecap="round" fill="none" opacity=".6"/>
+              <!-- 画太郎風：極太眉毛（左） -->
+              <rect x="48" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
+              <rect x="46" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(-8 46 50)"/>
+              <!-- 画太郎風：極太眉毛（右） -->
+              <rect x="86" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
+              <rect x="100" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(8 100 50)"/>
+              <!-- 画太郎風：ギョロ目（左）白目大きめ -->
+              <circle cx="62" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
+              <circle cx="64" cy="71" r="8" fill="#1a1a2e"/>
+              <circle cx="66" cy="68" r="2.5" fill="#fff"/>
+              <circle cx="61" cy="74" r="1.2" fill="#fff" opacity=".6"/>
+              <!-- 画太郎風：ギョロ目（右）白目大きめ -->
+              <circle cx="98" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
+              <circle cx="96" cy="71" r="8" fill="#1a1a2e"/>
+              <circle cx="94" cy="68" r="2.5" fill="#fff"/>
+              <circle cx="99" cy="74" r="1.2" fill="#fff" opacity=".6"/>
+              <!-- 画太郎風：への字口（不満顔） -->
+              <path d="M63 88 Q80 82 97 88" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <!-- 鼻（小さい点） -->
+              <ellipse cx="80" cy="80" rx="3" ry="2" fill="#8ba3c4" opacity=".5"/>
+              <!-- アンテナ -->
               <rect x="77" y="6" width="6" height="28" rx="3" fill="#5b7bb8"/>
               <g class="prubot-anim-antenna"><rect x="62" y="0" width="36" height="22" rx="6" fill="#FFD700"/><path d="M62 8 L80 16 L98 8" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <!-- ネームプレート -->
               <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
               <text x="80" y="183" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
             </svg>
@@ -543,9 +569,21 @@
       <rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/>
       <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
       <rect x="42" y="44" width="76" height="56" rx="18" fill="#e8f0fe"/>
-      <g class="prubot-anim-eye"><circle cx="62" cy="68" r="12" fill="#fff"/><circle cx="62" cy="68" r="7" fill="#003087"/><circle cx="65" cy="65" r="2.5" fill="#fff"/></g>
-      <g class="prubot-anim-eye"><circle cx="98" cy="68" r="12" fill="#fff"/><circle cx="98" cy="68" r="7" fill="#003087"/><circle cx="101" cy="65" r="2.5" fill="#fff"/></g>
-      <path d="M68 85 Q80 93 92 85" stroke="#003087" stroke-width="2.5" stroke-linecap="round" fill="none" opacity=".6"/>
+      <!-- 画太郎風：極太眉毛 -->
+      <rect x="48" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
+      <rect x="46" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(-8 46 50)"/>
+      <rect x="86" y="52" width="26" height="7" rx="3.5" fill="#1a1a2e"/>
+      <rect x="100" y="50" width="10" height="5" rx="2.5" fill="#1a1a2e" transform="rotate(8 100 50)"/>
+      <!-- 画太郎風：ギョロ目 -->
+      <circle cx="62" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
+      <circle cx="64" cy="71" r="8" fill="#1a1a2e"/>
+      <circle cx="66" cy="68" r="2.5" fill="#fff"/>
+      <circle cx="98" cy="70" r="13" fill="#fff" stroke="#1a1a2e" stroke-width="2"/>
+      <circle cx="96" cy="71" r="8" fill="#1a1a2e"/>
+      <circle cx="94" cy="68" r="2.5" fill="#fff"/>
+      <!-- への字口 -->
+      <path d="M63 88 Q80 82 97 88" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <ellipse cx="80" cy="80" rx="3" ry="2" fill="#8ba3c4" opacity=".5"/>
       <rect x="77" y="6" width="6" height="28" rx="3" fill="#5b7bb8"/>
       <g class="prubot-anim-antenna"><rect x="62" y="0" width="36" height="22" rx="6" fill="#FFD700"/></g>
       <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
@@ -1063,7 +1101,7 @@ async function extractTodos() {
   if (btn) btn.style.opacity = '.5';
 
   if (!config.claudeKey) {
-    // Simple regex-based extraction
+    // APIキーなし → 即座に簡易抽出
     extractTodosSimple();
     return;
   }
@@ -1114,11 +1152,12 @@ function extractTodosSimple() {
   const combined = bodies.join('\n');
   const found = [];
 
-  // Pattern: TODO: xxx, ・xxx, • xxx
+  // パターン: TODO: / Todo: / todo: / ・xxx / •xxx / -xxx
   const patterns = [
-    /TODO[：:]\s*(.+)/gi,
-    /・(.{5,60})/g,
-    /•\s*(.{5,60})/g,
+    /[Tt][Oo][Dd][Oo][：:]\s*(.+)/g,
+    /・(.{4,60})/g,
+    /•\s*(.{4,60})/g,
+    /^[-－]\s*(.{4,60})/gm,
   ];
   for (const re of patterns) {
     let m;
