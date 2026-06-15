@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>スパムくん - メール検索</title>
+<title>スパムくん - メール検索やで！</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -371,7 +371,7 @@
     </div>
     スパムくん
   </div>
-  <span class="badge">Outlook連携 · AI要約 · Todo抽出</span>
+  <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -385,28 +385,24 @@
   <div class="setup-card">
     <div style="text-align:center; margin-bottom:24px;">
       <div style="font-size:40px; margin-bottom:8px;">🤖</div>
-      <h2>スパムくんへようこそ</h2>
-      <p>Outlookのメールを素早く検索し、AIがスレッドを要約・Todo抽出します。<br>初回のみAzure情報とAPIキーを入力してください。</p>
+      <h2>スパムくんへようこそやで！</h2>
+      <p>Outlookのメールをサクッと検索して、AIがスレッドを要約・Todo抽出してくれるで！<br>初回だけクライアントIDを入力してな。</p>
     </div>
 
     <div class="form-group">
       <label class="form-label">アプリケーション（クライアント）ID</label>
       <input type="text" id="clientId" class="form-input" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
     </div>
-    <div class="form-group">
-      <label class="form-label">クライアントシークレット</label>
-      <input type="password" id="clientSecret" class="form-input" placeholder="シークレットの値を入力" />
-    </div>
 
     <details class="api-key-section">
       <summary>▶ AI要約・Todo抽出機能を使う（Claude APIキー）</summary>
       <div class="api-key-inner">
         <div class="info-box">
-          💡 Claude APIキーがあるとスレッドの要約やTodo抽出がAIで自動化されます。<br>
-          キーは <a href="https://console.anthropic.com" target="_blank" style="color:#2563eb;">console.anthropic.com</a> で取得できます。
+          💡 Claude APIキーがあったらスレッドの要約やTodo抽出がAIで自動でできるで！<br>
+          キーは <a href="https://console.anthropic.com" target="_blank" style="color:#2563eb;">console.anthropic.com</a> で取得できるで。
         </div>
         <div class="form-group">
-          <label class="form-label">Claude APIキー（任意）</label>
+          <label class="form-label">Claude APIキー（任意やで）</label>
           <input type="password" id="claudeApiKey" class="form-input" placeholder="sk-ant-..." />
         </div>
       </div>
@@ -415,12 +411,12 @@
     <div style="margin-top:20px;">
       <button class="primary full-width" onclick="startApp()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        Microsoftアカウントでログイン
+        Microsoftアカウントでログインするで！
       </button>
     </div>
 
     <div style="margin-top:14px; text-align:center; font-size:11px; color:var(--text-muted);">
-      入力した情報はブラウザ内のみで使用されます。外部に送信されることはありません。
+      入力した情報はブラウザ内だけで使うで。外には送らへんから安心してな！
     </div>
   </div>
 </div>
@@ -439,7 +435,7 @@
               <span class="icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               </span>
-              <input type="text" id="searchBox" placeholder="キーワードを入力（例：会議、請求書、プロジェクト…）" />
+              <input type="text" id="searchBox" placeholder="キーワードを入力してな（例：会議、請求書、プロジェクト…）" />
             </div>
             <button class="primary" onclick="doSearch()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -518,7 +514,7 @@
           </div>
           <div id="todoList"></div>
           <div id="todoEmpty" style="padding:24px 16px; text-align:center; color:var(--text-muted); font-size:12px;">
-            Todoはまだありません。<br>スレッドを開いてTodo抽出ボタンを押してください。
+            Todoはまだあらへんで。<br>スレッドを開いてTodo抽出ボタンを押してみてな！
           </div>
         </div>
       </div>
@@ -599,22 +595,41 @@ function finishProgress() {
 }
 
 /* =========================================================
-   SETUP & AUTH
+   SETUP & AUTH (SPA / PKCE フロー)
 ========================================================= */
-function startApp() {
+
+// PKCE helper
+function generateRandomString(len) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  let result = '';
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  arr.forEach(v => result += chars[v % chars.length]);
+  return result;
+}
+async function sha256Base64url(str) {
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function startApp() {
   const clientId = document.getElementById('clientId').value.trim();
-  const clientSecret = document.getElementById('clientSecret').value.trim();
   const claudeKey = document.getElementById('claudeApiKey').value.trim();
 
-  if (!clientId || !clientSecret) {
-    toast('クライアントIDとシークレットを入力してください', 'danger'); return;
+  if (!clientId) {
+    toast('クライアントIDを入力してな！', 'danger'); return;
   }
 
-  config = { clientId, clientSecret, claudeKey };
-  localStorage.setItem('spamkun_config', JSON.stringify({ clientId, claudeKey }));
+  // PKCE
+  const verifier = generateRandomString(64);
+  const challenge = await sha256Base64url(verifier);
 
-  // OAuth2 認証コードフロー
-  const redirectUri = window.location.href.split('?')[0].split('#')[0];
+  localStorage.setItem('spamkun_config', JSON.stringify({ clientId, claudeKey }));
+  localStorage.setItem('spamkun_pkce_verifier', verifier);
+
+  const redirectUri = location.origin + location.pathname;
   const scope = 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access';
   const authUrl = `https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?` +
     `client_id=${encodeURIComponent(clientId)}` +
@@ -622,7 +637,8 @@ function startApp() {
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&scope=${encodeURIComponent(scope)}` +
     `&response_mode=query` +
-    `&state=${encodeURIComponent(clientSecret)}`;
+    `&code_challenge=${challenge}` +
+    `&code_challenge_method=S256`;
 
   window.location.href = authUrl;
 }
@@ -630,42 +646,37 @@ function startApp() {
 async function handleCallback() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
-  const state = params.get('state'); // clientSecret encoded in state
-
   if (!code) return false;
 
-  // Clean URL
   window.history.replaceState({}, document.title, window.location.pathname);
 
   const saved = JSON.parse(localStorage.getItem('spamkun_config') || '{}');
-  const clientId = saved.clientId;
-  const claudeKey = saved.claudeKey || '';
-  const clientSecret = decodeURIComponent(state);
+  const verifier = localStorage.getItem('spamkun_pkce_verifier');
 
-  if (!clientId || !clientSecret) {
-    toast('設定情報が見つかりません。再度ログインしてください', 'danger');
+  if (!saved.clientId || !verifier) {
+    toast('設定情報が見つからへん。もう一回ログインしてな！', 'danger');
     return false;
   }
 
-  config = { clientId, clientSecret, claudeKey };
-  toast('認証中...', '');
+  config = { clientId: saved.clientId, claudeKey: saved.claudeKey || '' };
+  toast('認証中やで…', '');
 
-  const redirectUri = window.location.href.split('?')[0].split('#')[0];
-
+  const redirectUri = location.origin + location.pathname;
   try {
-    const res = await fetch(`https://login.microsoftonline.com/consumers/oauth2/v2.0/token`, {
+    const res = await fetch('https://login.microsoftonline.com/consumers/oauth2/v2.0/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
-        client_id: clientId,
-        client_secret: clientSecret,
+        client_id: saved.clientId,
         code,
         redirect_uri: redirectUri,
         grant_type: 'authorization_code',
+        code_verifier: verifier,
         scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access'
       })
     });
     const data = await res.json();
+    localStorage.removeItem('spamkun_pkce_verifier');
     if (data.access_token) {
       accessToken = data.access_token;
       if (data.refresh_token) localStorage.setItem('spamkun_refresh', data.refresh_token);
@@ -684,19 +695,13 @@ async function tryRefreshToken() {
   const refreshToken = localStorage.getItem('spamkun_refresh');
   const saved = JSON.parse(localStorage.getItem('spamkun_config') || '{}');
   if (!refreshToken || !saved.clientId) return false;
-
-  // We need clientSecret; not stored for security. Prompt if needed.
-  const clientSecret = prompt('セッションが切れました。クライアントシークレットを入力してください：');
-  if (!clientSecret) return false;
-
-  const redirectUri = window.location.href.split('?')[0].split('#')[0];
+  const redirectUri = location.origin + location.pathname;
   try {
-    const res = await fetch(`https://login.microsoftonline.com/consumers/oauth2/v2.0/token`, {
+    const res = await fetch('https://login.microsoftonline.com/consumers/oauth2/v2.0/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         client_id: saved.clientId,
-        client_secret: clientSecret,
         refresh_token: refreshToken,
         grant_type: 'refresh_token',
         scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access'
@@ -705,7 +710,6 @@ async function tryRefreshToken() {
     const data = await res.json();
     if (data.access_token) {
       accessToken = data.access_token;
-      config = { ...saved, clientSecret, claudeKey: saved.claudeKey || '' };
       if (data.refresh_token) localStorage.setItem('spamkun_refresh', data.refresh_token);
       return true;
     }
@@ -720,7 +724,7 @@ async function graphGet(path) {
   });
   if (res.status === 401) {
     const ok = await tryRefreshToken();
-    if (!ok) throw new Error('再認証が必要です');
+    if (!ok) throw new Error('もう一回ログインしてな！');
     return graphGet(path);
   }
   if (!res.ok) throw new Error(`Graph API error ${res.status}`);
@@ -734,7 +738,7 @@ function logout() {
   document.getElementById('setupScreen').classList.remove('hidden');
   document.getElementById('headerUser').style.display = 'none';
   document.getElementById('prubot-corner').style.display = 'none';
-  toast('ログアウトしました');
+  toast('ログアウトしたで！またな！');
 }
 
 /* =========================================================
@@ -775,11 +779,11 @@ async function showApp() {
   });
 
   renderTodos();
-  toast('ログイン成功！メールを検索できます', 'success');
+  toast('ログイン成功やで！メールを検索してみてな！', 'success');
 
   // Welcome bubble
   setTimeout(() => {
-    showBubble('こんにちは！<em>スパムくん</em> です。<br>上の検索窓でメールを探せます！');
+    showBubble('おおきに！<em>スパムくん</em> やで！<br>上の検索窓でメールをサクッと探せるで！');
     setTimeout(() => hideBubble(), 4500);
   }, 800);
 }
@@ -789,7 +793,7 @@ async function showApp() {
 ========================================================= */
 async function doSearch() {
   const q = document.getElementById('searchBox').value.trim();
-  if (!q) { toast('キーワードを入力してください'); return; }
+  if (!q) { toast('キーワードを入力してな！'); return; }
 
   closeDetail();
   document.getElementById('resultList').innerHTML = '';
@@ -816,11 +820,11 @@ async function doSearch() {
     // Group by conversationId (thread)
     const threads = groupByThread(data.value);
     renderResults(threads);
-    toast(`${data.value.length}件のメールが見つかりました（${threads.length}スレッド）`, 'success');
+    toast(`${data.value.length}件のメールが見つかったで！（${threads.length}スレッド）`, 'success');
 
   } catch (e) {
     finishProgress();
-    toast('検索エラー: ' + e.message, 'danger');
+    toast('検索でコケてしもた: ' + e.message, 'danger');
   }
 }
 
@@ -836,15 +840,15 @@ async function loadRecent() {
     );
     finishProgress();
     if (!data.value || data.value.length === 0) {
-      document.getElementById('resultList').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>メールが見つかりませんでした</p></div>';
+      document.getElementById('resultList').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>メールが見つからへんかったで</p></div>';
       return;
     }
     const threads = groupByThread(data.value);
     renderResults(threads);
-    toast(`最近のメール ${data.value.length}件を表示しています`);
+    toast(`最近のメール ${data.value.length}件を表示してるで！`);
   } catch (e) {
     finishProgress();
-    toast('読み込みエラー: ' + e.message, 'danger');
+    toast('読み込みでコケてしもた: ' + e.message, 'danger');
   }
 }
 
@@ -868,7 +872,7 @@ function groupByThread(messages) {
 function renderResults(threads) {
   const container = document.getElementById('resultList');
   if (threads.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>結果がありません</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>結果がないで…</p></div>';
     return;
   }
 
@@ -894,7 +898,7 @@ function renderResults(threads) {
     card.style.cssText = 'animation: card-in .35s cubic-bezier(.22,1,.36,1) both;';
     card.style.animationDelay = `${idx * 40}ms`;
     card.innerHTML = `
-      <div class="result-title">${escHtml(thread.subject || '（件名なし）')}</div>
+      <div class="result-title">${escHtml(thread.subject || '（件名なしやで）')}</div>
       <div class="result-meta">
         <div class="meta-row">
           <span class="meta-chip">📨 ${escHtml(from)}</span>
@@ -926,7 +930,7 @@ async function openThread(idx, threads) {
   document.getElementById('resultList').classList.add('hidden');
   const detail = document.getElementById('detailView');
   detail.classList.remove('hidden');
-  document.getElementById('detailTitle').textContent = thread.subject || '（件名なし）';
+  document.getElementById('detailTitle').textContent = thread.subject || '（件名なしやで）';
 
   const content = document.getElementById('detailContent');
   content.innerHTML = '';
@@ -937,9 +941,9 @@ async function openThread(idx, threads) {
   aiBox.innerHTML = `
     <div class="ai-summary-title">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      AIスレッド要約
+      AIスレッド要約やで
     </div>
-    <div class="ai-loading"><div class="spinner"></div>AIが要約を生成中...</div>`;
+    <div class="ai-loading"><div class="spinner"></div>AIが要約を考え中やで…</div>`;
   content.appendChild(aiBox);
 
   // Todo extract button
@@ -947,7 +951,7 @@ async function openThread(idx, threads) {
   todoBtn.style.marginBottom = '16px';
   todoBtn.innerHTML = `<span class="pill todo" id="todoExtractBtn" onclick="extractTodos()">
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-    このスレッドからTodo抽出
+    このスレッドからTodoを抽出するで！
   </span>`;
   content.appendChild(todoBtn);
 
@@ -1008,7 +1012,7 @@ function closeDetail() {
 ========================================================= */
 async function generateSummary(thread, aiBox) {
   if (!config.claudeKey) {
-    aiBox.querySelector('.ai-loading').textContent = '（Claude APIキーが未設定のためAI要約は無効です）';
+    aiBox.querySelector('.ai-loading').textContent = '（Claude APIキーが設定されてへんからAI要約はお休み中やで）';
     return;
   }
 
@@ -1043,11 +1047,11 @@ async function generateSummary(thread, aiBox) {
     aiBox.innerHTML = `
       <div class="ai-summary-title">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        AIスレッド要約
+        AIスレッド要約やで
       </div>
       <div class="ai-summary-text">${escHtml(summary)}</div>`;
   } catch (e) {
-    aiBox.querySelector('.ai-loading').textContent = 'AI要約エラー: ' + e.message;
+    aiBox.querySelector('.ai-loading').textContent = 'AI要約でコケてしもた: ' + e.message;
   }
 }
 
@@ -1093,12 +1097,12 @@ async function extractTodos() {
     const items = JSON.parse(text);
     if (Array.isArray(items) && items.length > 0) {
       addTodos(items, subject);
-      toast(`${items.length}件のTodoを抽出しました`, 'success');
+      toast(`${items.length}件のTodoを見つけたで！`, 'success');
     } else {
-      toast('Todoは見つかりませんでした');
+      toast('Todoは見つからへんかったわ');
     }
   } catch (e) {
-    toast('Todo抽出エラー: ' + e.message, 'danger');
+    toast('Todo抽出でコケてしもた: ' + e.message, 'danger');
   }
 
   if (btn) btn.style.opacity = '1';
@@ -1126,9 +1130,9 @@ function extractTodosSimple() {
 
   if (found.length > 0) {
     addTodos(found, subject);
-    toast(`${found.length}件のTodoを抽出しました`, 'success');
+    toast(`${found.length}件のTodoを見つけたで！`, 'success');
   } else {
-    toast('Todoは見つかりませんでした');
+    toast('Todoは見つからへんかったわ');
   }
 
   const btn = document.getElementById('todoExtractBtn');
@@ -1169,7 +1173,7 @@ function renderTodos() {
 
   if (done.length) {
     const div = document.createElement('div');
-    div.innerHTML = `<div class="todo-done-divider">✓ 完了済み ${done.length}件</div>`;
+    div.innerHTML = `<div class="todo-done-divider">✓ 完了済み ${done.length}件やで</div>`;
     list.appendChild(div);
     done.forEach(td => list.appendChild(makeTodoItem(td, true)));
   }
@@ -1179,7 +1183,7 @@ function makeTodoItem(td, isDone) {
   const item = document.createElement('div');
   item.className = isDone ? 'todo-item todo-item-done' : 'todo-item';
   item.innerHTML = `
-    <button class="todo-complete-btn${isDone ? ' done' : ''}" title="${isDone ? '完了済み' : '完了にする'}">${CHECK_SVG}</button>
+    <button class="todo-complete-btn${isDone ? ' done' : ''}" title="${isDone ? '完了済みやで' : '完了にするで'}">${CHECK_SVG}</button>
     <div class="todo-text">
       <div class="text">${escHtml(td.text)}</div>
       <div class="meta">${escHtml(td.subject)}</div>
@@ -1202,9 +1206,9 @@ function makeTodoItem(td, isDone) {
 }
 
 function clearTodos() {
-  if (!todos.length) { toast('Todoはありません'); return; }
+  if (!todos.length) { toast('Todoはあらへんで！'); return; }
   todos = []; saveTodos(); renderTodos();
-  toast('Todo一覧をクリアしました');
+  toast('Todo一覧を全部消したで！');
 }
 
 function saveTodos() {
@@ -1216,7 +1220,7 @@ function saveTodos() {
 ========================================================= */
 function showBubble(html) {
   const b = document.getElementById('prubot-bubble');
-  b.innerHTML = html + `<span class="bubble-close" onclick="hideBubble()">閉じる</span>`;
+  b.innerHTML = html + `<span class="bubble-close" onclick="hideBubble()">閉じるで</span>`;
   b.style.display = '';
   pruBotOpen = true;
 }
@@ -1226,7 +1230,7 @@ function hideBubble() {
 }
 function pruBotToggle() {
   if (pruBotOpen) { hideBubble(); return; }
-  showBubble('🔍 <em>PRU-BOT</em> です！<br>検索窓にキーワードを入れて<br>メールを探せます。');
+  showBubble('🔍 <em>PRU-BOT</em> やで！<br>検索窓にキーワードを入れたら<br>メールをサクッと探せるで！');
   setTimeout(() => { if (pruBotOpen) hideBubble(); }, 4000);
 }
 
@@ -1251,7 +1255,7 @@ window.addEventListener('DOMContentLoaded', () => {
         config = { ...saved };
         // Prefill clientId
         document.getElementById('clientId').value = saved.clientId || '';
-        toast('再度ログインしてください', '');
+        toast('もう一回ログインしてな！', '');
       } else {
         const saved2 = JSON.parse(localStorage.getItem('spamkun_config') || '{}');
         if (saved2.clientId) {
