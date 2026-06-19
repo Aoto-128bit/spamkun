@@ -432,7 +432,7 @@
     スパミーくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.5</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.6</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -857,16 +857,17 @@ async function tryRefreshToken() {
   } catch { return false; }
 }
 
-async function graphGet(pathOrUrl) {
+async function graphGet(pathOrUrl, _retried = false) {
   if (!accessToken) throw new Error('未認証');
   const url = pathOrUrl.startsWith('http') ? pathOrUrl : `https://graph.microsoft.com/v1.0${pathOrUrl}`;
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   if (res.status === 401) {
+    if (_retried) throw new Error('認証エラー: 再ログインしてな！');
     const ok = await tryRefreshToken();
     if (!ok) throw new Error('もう一回ログインしてな！');
-    return graphGet(pathOrUrl);
+    return graphGet(pathOrUrl, true);
   }
   if (!res.ok) {
     let errMsg = `Graph API error ${res.status}`;
@@ -903,6 +904,17 @@ async function graphGetAll(initialPath, maxResults = MAX_RESULTS) {
     results = results.slice(0, maxResults);
   }
   return { value: results, hasMore };
+}
+
+function isTeamsAuthError(msg) {
+  return msg && (
+    msg.includes('No authorization') ||
+    msg.includes('Insufficient') ||
+    msg.includes('Authorization') ||
+    msg.includes('認証エラー') ||
+    msg.includes('401') ||
+    msg.includes('403')
+  );
 }
 
 /* =========================================================
@@ -1105,11 +1117,8 @@ async function doSearch() {
     ]);
 
     finishProgress();
-    if (teamsErr) {
-      const isPermErr = teamsErr.includes('Insufficient') || teamsErr.includes('403') || teamsErr.includes('Authorization');
-      toast(isPermErr
-        ? 'Teams権限エラー: AzureポータルでChat.Read権限を追加して再ログインしてな！'
-        : 'Teams取得失敗: ' + teamsErr, 'danger');
+    if (teamsErr && !isTeamsAuthError(teamsErr)) {
+      toast('Teams取得失敗: ' + teamsErr, 'danger');
     }
 
     const mailMessages = mailResult.value || [];
@@ -1159,11 +1168,8 @@ async function loadRecent() {
     ]);
 
     finishProgress();
-    if (teamsErr) {
-      const isPermErr = teamsErr.includes('Insufficient') || teamsErr.includes('403') || teamsErr.includes('Authorization');
-      toast(isPermErr
-        ? 'Teams権限エラー: AzureポータルでChat.Read権限を追加して再ログインしてな！'
-        : 'Teams取得失敗: ' + teamsErr, 'danger');
+    if (teamsErr && !isTeamsAuthError(teamsErr)) {
+      toast('Teams取得失敗: ' + teamsErr, 'danger');
     }
     const mailMessages = mailResult.value || [];
     const mailThreads = mailMessages.length ? groupByThread(mailMessages) : [];
