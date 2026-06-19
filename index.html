@@ -425,7 +425,7 @@
     スパミーくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.0</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.2</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -1383,10 +1383,91 @@ function makeSummary(thread) {
 ========================================================= */
 async function extractTodos() {
   const btn = document.getElementById('todoExtractBtn');
-  if (btn) btn.style.opacity = '.5';
-  // ブラウザからはCORS制限でClaude APIを直接呼べへんので
-  // 常に簡易抽出で動かすで
-  extractTodosSimple();
+  if (btn) { btn.style.opacity = '.5'; btn.style.pointerEvents = 'none'; }
+
+  const savedConfig = JSON.parse(localStorage.getItem('spamkun_config') || '{}');
+  const claudeKey = config.claudeKey || savedConfig.claudeKey || '';
+
+  if (claudeKey) {
+    await extractTodosWithClaude(claudeKey);
+  } else {
+    extractTodosSimple();
+  }
+
+  if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = ''; }
+}
+
+async function extractTodosWithClaude(apiKey) {
+  const subject = currentThreadMessages[0]?.subject || 'スレッド';
+
+  // 各メールを「送信者: 本文」形式でまとめる
+  const mailsText = currentThreadMessages.map((m, i) => {
+    const from = m.from?.emailAddress?.name || m.from?.emailAddress?.address || '不明';
+    const body = (m._fullBody || m.bodyPreview || '').slice(0, 1500);
+    return `【メール${i + 1}】送信者: ${from}\n${body}`;
+  }).join('\n\n---\n\n');
+
+  const prompt = `以下のメールスレッドを読んで、受信者が対応・実行すべきTODO項目を抽出してください。
+
+件名: ${subject}
+
+${mailsText}
+
+【抽出ルール】
+- 明示的な依頼だけでなく、暗黙的に期待されているアクションも含める
+- 「よろしくお願いします」などの定型挨拶はTODOにしない
+- 各TODOは「〇〇する」形式の簡潔な行動表現にする
+- 期日や担当者の情報があれば括弧内に補足する
+
+以下のJSON形式のみで返答してください（説明文は不要）:
+{"todos": ["TODO1", "TODO2"]}
+TODOがなければ: {"todos": []}`;
+
+  // ローディング表示
+  const btn = document.getElementById('todoExtractBtn');
+  if (btn) btn.innerHTML = `<div class="spinner" style="width:11px;height:11px;border-width:1.5px;"></div> AIが分析中やで…`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('JSONが取り出せへんかった');
+
+    const parsed = JSON.parse(match[0]);
+    const items = (parsed.todos || []).filter(t => t && t.length >= 4);
+
+    if (items.length > 0) {
+      addTodos(items, subject);
+      toast(`AIが${items.length}件のTodoを見つけたで！`, 'success');
+    } else {
+      toast('AIはこのスレッドにTodoを見つけられへんかったわ');
+    }
+  } catch (e) {
+    toast(`Claude APIエラー、ルールベースで再試行するで (${e.message})`, 'danger');
+    extractTodosSimple();
+  } finally {
+    if (btn) btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> このスレッドからTodoを抽出するで！`;
+  }
 }
 
 function extractTodosSimple() {
