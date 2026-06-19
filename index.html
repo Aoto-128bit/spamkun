@@ -196,6 +196,29 @@
   .search-input-wrap input::placeholder { color: var(--text-muted); }
   .search-input-wrap input:focus { background: #fff; border-color: #60a5fa; box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
 
+  /* ── Popular Keywords ── */
+  .popular-keywords { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .kw-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+  .kw-chip {
+    font-size: 12px; font-weight: 500; padding: 5px 12px;
+    background: var(--bg-base); border: 1.5px solid var(--border);
+    border-radius: 99px; cursor: pointer; transition: all .15s; color: var(--text-secondary);
+  }
+  .kw-chip:hover { background: var(--accent-lt); border-color: #60a5fa; color: var(--accent); transform: translateY(-1px); }
+
+  /* ── Pagination ── */
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+  .page-btn {
+    min-width: 34px; height: 34px; padding: 0 10px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--bg-surface);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .page-btn:hover { background: var(--bg-hover); border-color: #93c5fd; }
+  .page-btn.active { background: linear-gradient(135deg, #2563eb, #1a4da0); color: #fff; border-color: transparent; box-shadow: 0 3px 8px rgba(37,99,235,.3); }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .page-info { font-size: 11px; color: var(--text-muted); margin: 0 6px; }
+
   /* ── Two Column ── */
   .two-col { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
   @media (max-width: 960px) { .two-col { grid-template-columns: 1fr; } }
@@ -400,7 +423,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.1.0</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.2.0</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -483,73 +506,75 @@
               初期化
             </button>
           </div>
+          <div id="popularKeywords" class="popular-keywords"></div>
         </div>
         <div class="search-card-mascot">
           <div class="prubot-anim-float">
-            <svg width="88" height="121" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+            <svg width="88" height="121" viewBox="-30 -10 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
               <!-- 影 -->
-              <ellipse cx="80" cy="214" rx="38" ry="6" fill="#003087" opacity=".12"/>
+              <ellipse cx="60" cy="205" rx="42" ry="8" fill="#003087" opacity=".12"/>
               <!-- 足 -->
-              <rect x="52" y="182" width="22" height="28" rx="11" fill="#002570"/>
-              <rect x="86" y="182" width="22" height="28" rx="11" fill="#002570"/>
-              <rect x="46" y="202" width="30" height="14" rx="7" fill="#003087"/>
-              <rect x="84" y="202" width="30" height="14" rx="7" fill="#003087"/>
-              <!-- 胴体 -->
-              <rect x="28" y="100" width="104" height="92" rx="22" fill="#003087"/>
-              <rect x="35" y="106" width="90" height="40" rx="14" fill="#1a4da0" opacity=".5"/>
-              <rect x="48" y="124" width="64" height="44" rx="10" fill="#fff" opacity=".92"/>
-              <rect x="56" y="133" width="48" height="4" rx="2" fill="#003087" opacity=".3"/>
-              <rect x="56" y="141" width="36" height="4" rx="2" fill="#003087" opacity=".3"/>
-              <path d="M48 134 L80 152 L112 134" stroke="#003087" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-              <circle cx="98" cy="156" r="10" fill="#16a34a"/>
-              <path d="M93 156 L96.5 159.5 L103 153" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- 腕 -->
-              <rect x="4" y="108" width="28" height="52" rx="14" fill="#003087"/>
-              <g class="prubot-anim-wave"><rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/><circle cx="148" cy="164" r="14" fill="#fff"/><circle cx="148" cy="164" r="9" stroke="#003087" stroke-width="2.5" fill="none"/><line x1="154" y1="170" x2="160" y2="177" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/></g>
-              <!-- 頭 -->
-              <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
-              <circle cx="30" cy="70" r="8" fill="#002570"/><circle cx="30" cy="70" r="4" fill="#FFD700"/>
-              <circle cx="130" cy="70" r="8" fill="#002570"/><circle cx="130" cy="70" r="4" fill="#FFD700"/>
-              <!-- 顔面（明るめ） -->
-              <rect x="42" y="38" width="76" height="62" rx="18" fill="#f0e8d0"/>
-              <!-- ボサボサ頭髪（画太郎風） -->
-              <path d="M42 48 Q35 20 55 18 Q60 10 70 14 Q78 6 88 10 Q98 4 108 14 Q118 10 122 28 Q118 38 110 42" stroke="#1a1a2e" stroke-width="3" fill="#2a2a2a" stroke-linecap="round"/>
-              <path d="M44 44 Q38 28 48 22" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-              <path d="M55 18 Q52 8 58 10" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-              <path d="M72 12 Q70 4 76 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-              <path d="M90 10 Q92 2 96 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-              <path d="M108 16 Q114 8 116 16" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-              <!-- 極太眉毛（画太郎風・つり上がり） -->
-              <path d="M46 54 Q58 46 72 50" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <path d="M88 50 Q102 46 114 54" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <!-- 飛び出し目玉（左） -->
-              <ellipse cx="62" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
-              <circle cx="63" cy="69" r="9" fill="#1a1a2e"/>
-              <circle cx="66" cy="65" r="3.5" fill="#fff"/>
-              <circle cx="60" cy="72" r="1.5" fill="#fff" opacity=".7"/>
-              <!-- 飛び出し目玉（右） -->
-              <ellipse cx="98" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
-              <circle cx="97" cy="69" r="9" fill="#1a1a2e"/>
-              <circle cx="94" cy="65" r="3.5" fill="#fff"/>
-              <circle cx="100" cy="72" r="1.5" fill="#fff" opacity=".7"/>
-              <!-- 大きく開いた口（画太郎風） -->
-              <path d="M58 86 Q62 82 80 82 Q98 82 102 86 Q102 98 80 100 Q58 98 58 86Z" fill="#1a1a2e" stroke="#1a1a2e" stroke-width="1"/>
-              <!-- 歯 -->
-              <rect x="63" y="82" width="8" height="7" rx="2" fill="#fff"/>
-              <rect x="74" y="82" width="8" height="8" rx="2" fill="#fff"/>
-              <rect x="85" y="82" width="8" height="7" rx="2" fill="#fff"/>
-              <rect x="66" y="94" width="7" height="6" rx="2" fill="#fff" opacity=".8"/>
-              <rect x="77" y="95" width="7" height="5" rx="2" fill="#fff" opacity=".8"/>
-              <!-- 鼻（でかめ） -->
-              <ellipse cx="80" cy="79" rx="5" ry="3.5" fill="#c9a882"/>
-              <circle cx="77" cy="80" r="1.5" fill="#a07850"/>
-              <circle cx="83" cy="80" r="1.5" fill="#a07850"/>
+              <rect x="28" y="150" width="22" height="40" rx="11" fill="#1a4da0"/>
+              <rect x="62" y="150" width="22" height="40" rx="11" fill="#1a4da0"/>
+              <rect x="22" y="178" width="32" height="16" rx="8" fill="#003087"/>
+              <rect x="58" y="178" width="32" height="16" rx="8" fill="#003087"/>
+              <!-- 胴体（まるっこい） -->
+              <rect x="10" y="30" width="100" height="130" rx="40" fill="#2563eb"/>
+              <!-- お腹の画面 -->
+              <rect x="26" y="55" width="68" height="50" rx="12" fill="#fff" opacity=".95"/>
+              <rect x="32" y="65" width="56" height="6" rx="3" fill="#93c5fd"/>
+              <rect x="32" y="76" width="40" height="6" rx="3" fill="#bfdbfe"/>
+              <rect x="32" y="87" width="50" height="6" rx="3" fill="#dbeafe"/>
+              <!-- 腕（ぷっくり） -->
+              <rect x="-22" y="45" width="34" height="60" rx="17" fill="#1a4da0"/>
+              <circle cx="-5" cy="115" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+              <circle cx="-5" cy="115" r="9" stroke="#003087" stroke-width="2" fill="none"/>
+              <line x1="-5" y1="121" x2="3" y2="130" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/>
+              <g class="prubot-anim-wave" style="transform-origin: 125px 75px;">
+                <rect x="108" y="45" width="34" height="60" rx="17" fill="#1a4da0"/>
+                <circle cx="125" cy="115" r="16" fill="#fff" opacity=".9"/>
+              </g>
+              <!-- 首 -->
+              <rect x="42" y="5" width="36" height="30" rx="10" fill="#1a4da0"/>
+              <!-- 頭（まるい） -->
+              <ellipse cx="60" cy="-40" rx="58" ry="55" fill="#2563eb"/>
+              <!-- 耳ボルト -->
+              <circle cx="4" cy="-40" r="12" fill="#1a4da0"/>
+              <circle cx="4" cy="-40" r="6" fill="#FFD700"/>
+              <circle cx="116" cy="-40" r="12" fill="#1a4da0"/>
+              <circle cx="116" cy="-40" r="6" fill="#FFD700"/>
+              <!-- 顔面（クリーム色） -->
+              <ellipse cx="60" cy="-38" rx="44" ry="42" fill="#fef9ee"/>
+              <!-- つぶらな目（左） -->
+              <g class="prubot-anim-eye">
+                <circle cx="42" cy="-50" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+                <circle cx="44" cy="-49" r="9" fill="#003087"/>
+                <circle cx="47" cy="-53" r="4" fill="#fff"/>
+                <circle cx="41" cy="-45" r="2" fill="#fff" opacity=".6"/>
+              </g>
+              <!-- つぶらな目（右） -->
+              <g class="prubot-anim-eye">
+                <circle cx="78" cy="-50" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+                <circle cx="76" cy="-49" r="9" fill="#003087"/>
+                <circle cx="73" cy="-53" r="4" fill="#fff"/>
+                <circle cx="79" cy="-45" r="2" fill="#fff" opacity=".6"/>
+              </g>
+              <!-- ほっぺ -->
+              <ellipse cx="28" cy="-32" rx="9" ry="6" fill="#fda4af" opacity=".6"/>
+              <ellipse cx="92" cy="-32" rx="9" ry="6" fill="#fda4af" opacity=".6"/>
+              <!-- にっこり口 -->
+              <path d="M44 -24 Q60 -12 76 -24" stroke="#003087" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <!-- 鼻 -->
+              <ellipse cx="60" cy="-34" rx="4" ry="3" fill="#f0c080" opacity=".8"/>
               <!-- アンテナ -->
-              <rect x="77" y="16" width="6" height="24" rx="3" fill="#5b7bb8"/>
-              <g class="prubot-anim-antenna"><rect x="62" y="8" width="36" height="22" rx="6" fill="#FFD700"/><path d="M62 16 L80 24 L98 16" stroke="#b45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <rect x="57" y="-102" width="6" height="20" rx="3" fill="#60a5fa"/>
+              <g class="prubot-anim-antenna">
+                <circle cx="60" cy="-106" r="10" fill="#FFD700" stroke="#f59e0b" stroke-width="2"/>
+                <circle cx="60" cy="-106" r="5" fill="#fff" opacity=".7"/>
+              </g>
               <!-- ネームプレート -->
-              <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
-              <text x="80" y="183" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
+              <rect x="28" y="188" width="64" height="20" rx="10" fill="#FFD700"/>
+              <text x="60" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
             </svg>
           </div>
           <span class="mascot-name">PRU-BOT</span>
@@ -605,56 +630,50 @@
 <div class="prubot-corner" id="prubot-corner" style="display:none;">
   <div class="prubot-bubble" id="prubot-bubble" style="display:none;"></div>
   <button class="prubot-btn prubot-anim-float" onclick="pruBotToggle()">
-    <svg width="88" height="121" viewBox="0 0 160 220" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-      <ellipse cx="80" cy="214" rx="38" ry="6" fill="#003087" opacity=".12"/>
-      <rect x="52" y="182" width="22" height="28" rx="11" fill="#002570"/>
-      <rect x="86" y="182" width="22" height="28" rx="11" fill="#002570"/>
-      <rect x="46" y="202" width="30" height="14" rx="7" fill="#003087"/>
-      <rect x="84" y="202" width="30" height="14" rx="7" fill="#003087"/>
-      <rect x="28" y="100" width="104" height="92" rx="22" fill="#003087"/>
-      <rect x="35" y="106" width="90" height="40" rx="14" fill="#1a4da0" opacity=".5"/>
-      <rect x="48" y="124" width="64" height="44" rx="10" fill="#fff" opacity=".92"/>
-      <path d="M48 134 L80 152 L112 134" stroke="#003087" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
-      <circle cx="98" cy="156" r="10" fill="#16a34a"/>
-      <path d="M93 156 L96.5 159.5 L103 153" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <rect x="4" y="108" width="28" height="52" rx="14" fill="#003087"/>
-      <rect x="128" y="108" width="28" height="52" rx="14" fill="#003087"/>
-      <rect x="30" y="28" width="100" height="82" rx="26" fill="#003087"/>
-      <circle cx="30" cy="70" r="8" fill="#002570"/><circle cx="30" cy="70" r="4" fill="#FFD700"/>
-      <circle cx="130" cy="70" r="8" fill="#002570"/><circle cx="130" cy="70" r="4" fill="#FFD700"/>
-      <!-- 顔面 -->
-      <rect x="42" y="38" width="76" height="62" rx="18" fill="#f0e8d0"/>
-      <!-- ボサボサ髪 -->
-      <path d="M42 48 Q35 20 55 18 Q60 10 70 14 Q78 6 88 10 Q98 4 108 14 Q118 10 122 28 Q118 38 110 42" stroke="#1a1a2e" stroke-width="3" fill="#2a2a2a" stroke-linecap="round"/>
-      <path d="M55 18 Q52 8 58 10" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-      <path d="M72 12 Q70 4 76 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-      <path d="M90 10 Q92 2 96 6" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-      <!-- 極太眉 -->
-      <path d="M46 54 Q58 46 72 50" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <path d="M88 50 Q102 46 114 54" stroke="#1a1a2e" stroke-width="6" stroke-linecap="round" fill="none"/>
-      <!-- 飛び出し目玉 -->
-      <ellipse cx="62" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
-      <circle cx="63" cy="69" r="9" fill="#1a1a2e"/>
-      <circle cx="66" cy="65" r="3.5" fill="#fff"/>
-      <ellipse cx="98" cy="68" rx="14" ry="15" fill="#fff" stroke="#1a1a2e" stroke-width="2.5"/>
-      <circle cx="97" cy="69" r="9" fill="#1a1a2e"/>
-      <circle cx="94" cy="65" r="3.5" fill="#fff"/>
-      <!-- 大口 -->
-      <path d="M58 86 Q62 82 80 82 Q98 82 102 86 Q102 98 80 100 Q58 98 58 86Z" fill="#1a1a2e"/>
-      <rect x="63" y="82" width="8" height="7" rx="2" fill="#fff"/>
-      <rect x="74" y="82" width="8" height="8" rx="2" fill="#fff"/>
-      <rect x="85" y="82" width="8" height="7" rx="2" fill="#fff"/>
-      <rect x="66" y="94" width="7" height="6" rx="2" fill="#fff" opacity=".8"/>
-      <rect x="77" y="95" width="7" height="5" rx="2" fill="#fff" opacity=".8"/>
-      <!-- 鼻 -->
-      <ellipse cx="80" cy="79" rx="5" ry="3.5" fill="#c9a882"/>
-      <circle cx="77" cy="80" r="1.5" fill="#a07850"/>
-      <circle cx="83" cy="80" r="1.5" fill="#a07850"/>
-      <!-- アンテナ -->
-      <rect x="77" y="16" width="6" height="24" rx="3" fill="#5b7bb8"/>
-      <g class="prubot-anim-antenna"><rect x="62" y="8" width="36" height="22" rx="6" fill="#FFD700"/></g>
-      <rect x="62" y="170" width="36" height="18" rx="9" fill="#FFD700"/>
-      <text x="80" y="183" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
+    <svg width="88" height="121" viewBox="-30 -10 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <ellipse cx="60" cy="205" rx="42" ry="8" fill="#003087" opacity=".12"/>
+      <rect x="28" y="150" width="22" height="40" rx="11" fill="#1a4da0"/>
+      <rect x="62" y="150" width="22" height="40" rx="11" fill="#1a4da0"/>
+      <rect x="22" y="178" width="32" height="16" rx="8" fill="#003087"/>
+      <rect x="58" y="178" width="32" height="16" rx="8" fill="#003087"/>
+      <rect x="10" y="30" width="100" height="130" rx="40" fill="#2563eb"/>
+      <rect x="26" y="55" width="68" height="50" rx="12" fill="#fff" opacity=".95"/>
+      <rect x="32" y="65" width="56" height="6" rx="3" fill="#93c5fd"/>
+      <rect x="32" y="76" width="40" height="6" rx="3" fill="#bfdbfe"/>
+      <rect x="32" y="87" width="50" height="6" rx="3" fill="#dbeafe"/>
+      <rect x="-22" y="45" width="34" height="60" rx="17" fill="#1a4da0"/>
+      <circle cx="-5" cy="115" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+      <circle cx="-5" cy="115" r="9" stroke="#003087" stroke-width="2" fill="none"/>
+      <line x1="-5" y1="121" x2="3" y2="130" stroke="#003087" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="108" y="45" width="34" height="60" rx="17" fill="#1a4da0"/>
+      <circle cx="125" cy="115" r="16" fill="#fff" opacity=".9"/>
+      <rect x="42" y="5" width="36" height="30" rx="10" fill="#1a4da0"/>
+      <ellipse cx="60" cy="-40" rx="58" ry="55" fill="#2563eb"/>
+      <circle cx="4" cy="-40" r="12" fill="#1a4da0"/>
+      <circle cx="4" cy="-40" r="6" fill="#FFD700"/>
+      <circle cx="116" cy="-40" r="12" fill="#1a4da0"/>
+      <circle cx="116" cy="-40" r="6" fill="#FFD700"/>
+      <ellipse cx="60" cy="-38" rx="44" ry="42" fill="#fef9ee"/>
+      <g class="prubot-anim-eye">
+        <circle cx="42" cy="-50" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+        <circle cx="44" cy="-49" r="9" fill="#003087"/>
+        <circle cx="47" cy="-53" r="4" fill="#fff"/>
+      </g>
+      <g class="prubot-anim-eye">
+        <circle cx="78" cy="-50" r="16" fill="#fff" stroke="#003087" stroke-width="2"/>
+        <circle cx="76" cy="-49" r="9" fill="#003087"/>
+        <circle cx="73" cy="-53" r="4" fill="#fff"/>
+      </g>
+      <ellipse cx="28" cy="-32" rx="9" ry="6" fill="#fda4af" opacity=".6"/>
+      <ellipse cx="92" cy="-32" rx="9" ry="6" fill="#fda4af" opacity=".6"/>
+      <path d="M44 -24 Q60 -12 76 -24" stroke="#003087" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <ellipse cx="60" cy="-34" rx="4" ry="3" fill="#f0c080" opacity=".8"/>
+      <rect x="57" y="-102" width="6" height="20" rx="3" fill="#60a5fa"/>
+      <g class="prubot-anim-antenna">
+        <circle cx="60" cy="-106" r="10" fill="#FFD700" stroke="#f59e0b" stroke-width="2"/>
+      </g>
+      <rect x="28" y="188" width="64" height="20" rx="10" fill="#FFD700"/>
+      <text x="60" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
     </svg>
   </button>
 </div>
@@ -681,6 +700,8 @@ let config = {};
 let todos = JSON.parse(localStorage.getItem('spamkun_todos') || '[]');
 let currentThreadMessages = [];
 let pruBotOpen = false;
+let currentPage = 1;
+const PAGE_SIZE = 10;
 
 const CHECK_SVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
 
@@ -833,18 +854,44 @@ async function tryRefreshToken() {
   } catch { return false; }
 }
 
-async function graphGet(path) {
+async function graphGet(pathOrUrl) {
   if (!accessToken) throw new Error('未認証');
-  const res = await fetch(`https://graph.microsoft.com/v1.0${path}`, {
+  const url = pathOrUrl.startsWith('http') ? pathOrUrl : `https://graph.microsoft.com/v1.0${pathOrUrl}`;
+  const res = await fetch(url, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   if (res.status === 401) {
     const ok = await tryRefreshToken();
     if (!ok) throw new Error('もう一回ログインしてな！');
-    return graphGet(path);
+    return graphGet(pathOrUrl);
   }
   if (!res.ok) throw new Error(`Graph API error ${res.status}`);
   return res.json();
+}
+
+const MAX_RESULTS = 1000; // メール取得の上限件数やで
+
+// ページネーションで複数ページ分まとめて取得（上限まで）するで
+async function graphGetAll(initialPath, maxResults = MAX_RESULTS) {
+  let results = [];
+  let nextUrl = initialPath;
+  let hasMore = false;
+
+  while (nextUrl && results.length < maxResults) {
+    const data = await graphGet(nextUrl);
+    if (data.value) results = results.concat(data.value);
+    nextUrl = data['@odata.nextLink'] || null;
+    if (nextUrl && results.length >= maxResults) {
+      hasMore = true; // 上限に達したけどまだ続きがある
+      break;
+    }
+  }
+
+  if (results.length > maxResults) {
+    hasMore = true;
+    results = results.slice(0, maxResults);
+  }
+  return { value: results, hasMore };
 }
 
 function logout() {
@@ -899,6 +946,7 @@ async function showApp() {
   });
 
   renderTodos();
+  renderPopularKeywords();
   toast('ログイン成功やで！メールを検索してみてな！', 'success');
 
   // Welcome bubble
@@ -918,6 +966,7 @@ function resetToHome() {
   document.getElementById('resultList').innerHTML = '';
   currentThreadMessages = [];
   window.threads_data = [];
+  currentPage = 1;
   toast('検索結果を初期化したで！');
 }
 
@@ -928,12 +977,13 @@ async function doSearch() {
   closeDetail();
   document.getElementById('resultList').innerHTML = '';
   startProgress();
+  currentPage = 1;
 
   try {
-    // Graph API: search messages
+    // Graph API: search messages（$topは1ページあたりの件数、最大999）
     const encoded = encodeURIComponent(q);
-    const data = await graphGet(
-      `/me/messages?$search="${encoded}"&$top=25&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments`
+    const data = await graphGetAll(
+      `/me/messages?$search="${encoded}"&$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments`
     );
 
     finishProgress();
@@ -950,7 +1000,9 @@ async function doSearch() {
     // Group by conversationId (thread)
     const threads = groupByThread(data.value);
     renderResults(threads);
-    toast(`${data.value.length}件のメールが見つかったで！（${threads.length}スレッド）`, 'success');
+    recordSearchKeyword(q);
+    const capNote = data.hasMore ? `（上限${MAX_RESULTS}件まで表示してるで）` : '';
+    toast(`${data.value.length}件のメールが見つかったで！（${threads.length}スレッド）${capNote}`, 'success');
 
   } catch (e) {
     finishProgress();
@@ -963,10 +1015,11 @@ async function loadRecent() {
   closeDetail();
   document.getElementById('resultList').innerHTML = '';
   startProgress();
+  currentPage = 1;
 
   try {
-    const data = await graphGet(
-      `/me/messages?$top=30&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments&$orderby=receivedDateTime desc`
+    const data = await graphGetAll(
+      `/me/messages?$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments&$orderby=receivedDateTime desc`
     );
     finishProgress();
     if (!data.value || data.value.length === 0) {
@@ -975,11 +1028,45 @@ async function loadRecent() {
     }
     const threads = groupByThread(data.value);
     renderResults(threads);
-    toast(`最近のメール ${data.value.length}件を表示してるで！`);
+    const capNote = data.hasMore ? `（上限${MAX_RESULTS}件まで表示してるで）` : '';
+    toast(`最近のメール ${data.value.length}件を表示してるで！${capNote}`);
   } catch (e) {
     finishProgress();
     toast('読み込みでコケてしもた: ' + e.message, 'danger');
   }
+}
+
+/* =========================================================
+   人気キーワード（よく使う検索ワード）
+========================================================= */
+function recordSearchKeyword(keyword) {
+  const counts = JSON.parse(localStorage.getItem('spamkun_keyword_counts') || '{}');
+  counts[keyword] = (counts[keyword] || 0) + 1;
+  localStorage.setItem('spamkun_keyword_counts', JSON.stringify(counts));
+  renderPopularKeywords();
+}
+
+function getPopularKeywords(limit = 8) {
+  const counts = JSON.parse(localStorage.getItem('spamkun_keyword_counts') || '{}');
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([word]) => word);
+}
+
+function renderPopularKeywords() {
+  const wrap = document.getElementById('popularKeywords');
+  if (!wrap) return;
+  const words = getPopularKeywords();
+  if (!words.length) { wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+  wrap.innerHTML = `<span class="kw-label">よく使うキーワード：</span>` +
+    words.map(w => `<span class="kw-chip" onclick="searchByKeyword('${w.replace(/'/g, "\\'")}')">${escHtml(w)}</span>`).join('');
+}
+
+function searchByKeyword(word) {
+  document.getElementById('searchBox').value = word;
+  doSearch();
 }
 
 function getHiddenThreadIds() {
@@ -993,7 +1080,7 @@ function hideThread(conversationId) {
   const ids = getHiddenThreadIds();
   if (!ids.includes(conversationId)) ids.push(conversationId);
   saveHiddenThreadIds(ids);
-  renderResults(window.threads_data || []);
+  renderResults(window.threads_data || [], currentPage);
   toast('スレッドをゴミ箱に移したで！「ゴミ箱」から戻せるで');
 }
 
@@ -1021,7 +1108,7 @@ function openMailTrash() {
       row.querySelector('button').onclick = () => {
         const newIds = getHiddenThreadIds().filter(id => id !== thread.conversationId);
         saveHiddenThreadIds(newIds);
-        renderResults(window.threads_data || []);
+        renderResults(window.threads_data || [], currentPage);
         openMailTrash();
         toast('スレッドを元に戻したで！', 'success');
       };
@@ -1048,9 +1135,10 @@ function groupByThread(messages) {
 /* =========================================================
    RENDER RESULTS
 ========================================================= */
-function renderResults(threads) {
+function renderResults(threads, page = 1) {
   const container = document.getElementById('resultList');
   window.threads_data = threads;
+  currentPage = page;
 
   const hiddenIds = JSON.parse(localStorage.getItem('spamkun_hidden_threads') || '[]');
   const visibleThreads = threads.filter(t => !hiddenIds.includes(t.conversationId));
@@ -1059,6 +1147,11 @@ function renderResults(threads) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>結果がないで…</p></div>';
     return;
   }
+
+  const totalPages = Math.max(1, Math.ceil(visibleThreads.length / PAGE_SIZE));
+  currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIdx = (currentPage - 1) * PAGE_SIZE;
+  const pageThreads = visibleThreads.slice(startIdx, startIdx + PAGE_SIZE);
 
   const header = document.createElement('div');
   header.className = 'section-header';
@@ -1069,7 +1162,7 @@ function renderResults(threads) {
   </div>`;
   container.appendChild(header);
 
-  visibleThreads.forEach((thread, idx) => {
+  pageThreads.forEach((thread, idx) => {
     const realIdx = threads.indexOf(thread);
     const latest = thread.messages[thread.messages.length - 1];
     const from = latest.from?.emailAddress?.name || latest.from?.emailAddress?.address || '不明';
@@ -1101,6 +1194,48 @@ function renderResults(threads) {
     card.onclick = () => openThread(realIdx, threads_data);
     container.appendChild(card);
   });
+
+  if (totalPages > 1) {
+    container.appendChild(makePagination(currentPage, totalPages, threads));
+  }
+}
+
+function makePagination(page, totalPages, threads) {
+  const nav = document.createElement('div');
+  nav.className = 'pagination';
+
+  const addBtn = (label, target, opts = {}) => {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (opts.active ? ' active' : '');
+    btn.textContent = label;
+    btn.disabled = !!opts.disabled;
+    if (!opts.disabled) btn.onclick = () => renderResults(threads, target);
+    nav.appendChild(btn);
+  };
+
+  addBtn('‹ 前へ', page - 1, { disabled: page <= 1 });
+
+  // ページ番号（多すぎる場合は省略）
+  const windowSize = 2;
+  for (let p = 1; p <= totalPages; p++) {
+    if (p === 1 || p === totalPages || (p >= page - windowSize && p <= page + windowSize)) {
+      addBtn(String(p), p, { active: p === page });
+    } else if (p === page - windowSize - 1 || p === page + windowSize + 1) {
+      const dots = document.createElement('span');
+      dots.className = 'page-info';
+      dots.textContent = '…';
+      nav.appendChild(dots);
+    }
+  }
+
+  addBtn('次へ ›', page + 1, { disabled: page >= totalPages });
+
+  const info = document.createElement('span');
+  info.className = 'page-info';
+  info.textContent = `（${page} / ${totalPages} ページ）`;
+  nav.appendChild(info);
+
+  return nav;
 }
 
 /* =========================================================
