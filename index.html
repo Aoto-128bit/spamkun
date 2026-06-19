@@ -425,7 +425,7 @@
     スパミーくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.2.5</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.0</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -1395,7 +1395,7 @@ function extractTodosSimple() {
   const combined = bodies.join('\n');
   const found = [];
 
-  // パターン: TODO: / Todo: / todo: / ・xxx / •xxx / -xxx
+  // 明示的マーカー: TODO: / ・xxx / •xxx / -xxx
   const patterns = [
     /[Tt][Oo][Dd][Oo][：:]\s*(.+)/g,
     /・(.{4,60})/g,
@@ -1410,6 +1410,11 @@ function extractTodosSimple() {
     }
   }
 
+  // 暗黙的依頼文の抽出（日本語ビジネスメール対応）
+  for (const item of extractTodosNLP(combined)) {
+    if (!found.includes(item)) found.push(item);
+  }
+
   if (found.length > 0) {
     addTodos(found, subject);
     toast(`${found.length}件のTodoを見つけたで！`, 'success');
@@ -1419,6 +1424,72 @@ function extractTodosSimple() {
 
   const btn = document.getElementById('todoExtractBtn');
   if (btn) btn.style.opacity = '1';
+}
+
+function extractTodosNLP(text) {
+  const found = [];
+
+  // 句点・改行・読点で文に分割し、前後の空白を除去
+  const sentences = text
+    .split(/[。\n]+/)
+    .map(s => s.replace(/^[\s　]+|[\s　]+$/g, ''))
+    .filter(s => s.length >= 8 && s.length <= 120);
+
+  // 依頼・アクション要求のシグナルワード
+  const requestSignals = [
+    'お願いします', 'お願いいたします', 'お願い申し上げます',
+    'ください', '下さい', 'くださいますよう', 'くださいますようお願い',
+    'いただけると', 'いただけますでしょうか', 'いただきますよう', 'いただければ',
+    'してほしい', 'してもらえると', 'てもらえますか',
+    'ご確認', 'ご対応', 'ご連絡', 'ご回答', 'ご参加', 'ご共有',
+    '確認をお願い', '対応をお願い', '連絡をお願い',
+  ];
+
+  // 定型挨拶・フィラー文（除外対象）
+  const excludePatterns = [
+    /^よろしくお願い/,
+    /^何卒よろしく/,
+    /^以上、?よろしく/,
+    /^お世話になっております/,
+    /^いつもお世話/,
+    /^お疲れ様/,
+    /^お疲れさま/,
+    /^ありがとうございます/,
+    /^ありがとうございました/,
+    /^お忙しいところ/,
+    /^突然のご連絡/,
+    /^はじめまして/,
+    /^失礼いたします/,
+    /^ご確認のほど、?よろしく/,
+    /^どうぞよろしく/,
+  ];
+
+  // 末尾の丁寧表現を削ぎ落としてアクション部分だけ残す
+  const politeEndings = [
+    /[、,]\s*(?:何卒)?よろしくお願い(?:いたし)?ます。?$/,
+    /ますよう、?お願い(?:いたし)?ます。?$/,
+    /いただけると(?:幸いです|助かります)。?$/,
+    /いただけますでしょうか。?$/,
+    /いただければ(?:幸いです|と思います)。?$/,
+    /くださいますよう(?:お願い(?:いたし)?ます)?。?$/,
+  ];
+
+  for (const sentence of sentences) {
+    if (excludePatterns.some(re => re.test(sentence))) continue;
+    if (!requestSignals.some(sig => sentence.includes(sig))) continue;
+
+    let todo = sentence;
+    for (const re of politeEndings) {
+      todo = todo.replace(re, '');
+    }
+    todo = todo.replace(/。$/, '').trim();
+
+    if (todo.length >= 8 && !found.includes(todo)) {
+      found.push(todo);
+    }
+  }
+
+  return found;
 }
 
 function addTodos(items, subject) {
