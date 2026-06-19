@@ -343,10 +343,12 @@
   @keyframes prubot-blink { 0%, 88%, 100% { transform: scaleY(1); } 93% { transform: scaleY(0.06); } }
   @keyframes prubot-antenna { 0%, 100% { opacity:1; } 50% { opacity:.45; } }
   @keyframes prubot-wave { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+  @keyframes prubot-sparkle { 0%, 100% { opacity:0; transform: scale(.4) rotate(0deg); } 50% { opacity:1; transform: scale(1) rotate(20deg); } }
   .prubot-anim-float   { animation: prubot-float 3.2s ease-in-out infinite; }
   .prubot-anim-eye     { animation: prubot-blink 4.8s ease-in-out infinite; transform-origin: center; }
   .prubot-anim-antenna { animation: prubot-antenna 2.1s ease-in-out infinite; }
   .prubot-anim-wave    { animation: prubot-wave 2.2s ease-in-out infinite; transform-origin: 10px 4px; }
+  .prubot-cheek-sparkle { animation: prubot-sparkle 2.6s ease-in-out infinite; transform-origin: center; }
 
   /* ── Search card mascot ── */
   .search-card-inner   { display: flex; align-items: center; gap: 20px; }
@@ -423,7 +425,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.2.1</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.2.2</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -513,59 +515,66 @@
             <svg width="88" height="121" viewBox="-30 -10 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
               <!-- 影 -->
               <ellipse cx="60" cy="205" rx="42" ry="8" fill="#003087" opacity=".12"/>
-              <!-- 足（スリム） -->
-              <rect x="30" y="145" width="18" height="50" rx="9" fill="#0f172a"/>
-              <rect x="64" y="145" width="18" height="50" rx="9" fill="#0f172a"/>
-              <rect x="24" y="183" width="30" height="14" rx="7" fill="#1e293b"/>
-              <rect x="60" y="183" width="30" height="14" rx="7" fill="#1e293b"/>
-              <!-- 胴体（スリム） -->
-              <rect x="18" y="20" width="84" height="132" rx="20" fill="#0f172a"/>
-              <rect x="26" y="36" width="68" height="50" rx="10" fill="#1e293b"/>
-              <!-- 胸の光 -->
-              <circle cx="60" cy="102" r="12" fill="#2563eb" opacity=".8"/>
-              <circle cx="60" cy="102" r="7" fill="#60a5fa"/>
-              <circle cx="60" cy="102" r="3" fill="#fff"/>
-              <!-- 腕 -->
-              <rect x="-10" y="30" width="28" height="70" rx="14" fill="#0f172a"/>
-              <rect x="-14" y="94" width="36" height="22" rx="11" fill="#1e293b"/>
-              <g class="prubot-anim-wave" style="transform-origin: 116px 30px;">
-                <rect x="102" y="30" width="28" height="70" rx="14" fill="#0f172a"/>
-                <rect x="98" y="94" width="36" height="22" rx="11" fill="#1e293b"/>
-              </g>
+              <!-- 足 -->
+              <rect x="32" y="160" width="20" height="34" rx="10" fill="#1a4da0"/>
+              <rect x="68" y="160" width="20" height="34" rx="10" fill="#1a4da0"/>
+              <ellipse cx="42" cy="194" rx="20" ry="10" fill="#0f2a6b"/>
+              <ellipse cx="78" cy="194" rx="20" ry="10" fill="#0f2a6b"/>
+              <!-- 胴体（寸胴・丸み） -->
+              <rect x="14" y="58" width="92" height="108" rx="34" fill="#1648a8"/>
+              <!-- お腹パネル -->
+              <rect x="32" y="86" width="56" height="46" rx="14" fill="#fff" opacity=".95"/>
+              <!-- 封筒アイコン -->
+              <rect x="42" y="96" width="36" height="24" rx="4" fill="#1648a8" opacity=".12"/>
+              <path d="M42 98 L60 110 L78 98" stroke="#1648a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
+              <!-- チェックバッジ -->
+              <circle cx="78" cy="118" r="11" fill="#22c55e"/>
+              <path d="M73 118 L76.5 121.5 L83 113" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <!-- 腕（固定・前向き） -->
+              <rect x="-8" y="70" width="26" height="56" rx="13" fill="#1648a8"/>
+              <circle cx="5" cy="130" r="15" fill="#1648a8"/>
+              <rect x="102" y="70" width="26" height="56" rx="13" fill="#1648a8"/>
+              <circle cx="115" cy="130" r="15" fill="#1648a8"/>
               <!-- 首 -->
-              <rect x="46" y="2" width="28" height="22" rx="8" fill="#1e293b"/>
-              <!-- 頭（四角め） -->
-              <rect x="8" y="-90" width="104" height="96" rx="28" fill="#0f172a"/>
-              <!-- バイザー枠 -->
-              <rect x="16" y="-76" width="88" height="48" rx="16" fill="#0ea5e9" opacity=".15"/>
-              <rect x="16" y="-76" width="88" height="48" rx="16" fill="none" stroke="#0ea5e9" stroke-width="1.5" opacity=".6"/>
-              <!-- 耳 -->
-              <rect x="-2" y="-68" width="12" height="28" rx="6" fill="#1e293b"/>
-              <rect x="110" y="-68" width="12" height="28" rx="6" fill="#1e293b"/>
-              <!-- 目（光るバイザー） -->
-              <g class="prubot-anim-eye">
-                <rect x="22" y="-68" width="30" height="20" rx="8" fill="#0ea5e9" opacity=".9"/>
-                <rect x="24" y="-66" width="26" height="16" rx="7" fill="#fff" opacity=".3"/>
+              <rect x="44" y="38" width="32" height="24" rx="10" fill="#1648a8"/>
+              <!-- 頭 -->
+              <ellipse cx="60" cy="-10" rx="58" ry="54" fill="#1648a8"/>
+              <!-- 耳ボルト -->
+              <circle cx="4" cy="-10" r="11" fill="#0f2a6b"/>
+              <circle cx="4" cy="-10" r="5.5" fill="#FFD700"/>
+              <circle cx="116" cy="-10" r="11" fill="#0f2a6b"/>
+              <circle cx="116" cy="-10" r="5.5" fill="#FFD700"/>
+              <!-- 顔面 -->
+              <ellipse cx="60" cy="-8" rx="44" ry="41" fill="#f4f8ff"/>
+              <!-- 瞬きする目（左） -->
+              <g class="prubot-anim-eye" style="transform-origin: 42px -18px;">
+                <circle cx="42" cy="-18" r="12" fill="#fff" stroke="#1648a8" stroke-width="2"/>
+                <circle cx="44" cy="-17" r="6.5" fill="#1648a8"/>
+                <circle cx="46" cy="-20" r="2.4" fill="#fff"/>
               </g>
-              <g class="prubot-anim-eye">
-                <rect x="68" y="-68" width="30" height="20" rx="8" fill="#0ea5e9" opacity=".9"/>
-                <rect x="70" y="-66" width="26" height="16" rx="7" fill="#fff" opacity=".3"/>
+              <!-- 瞬きする目（右） -->
+              <g class="prubot-anim-eye" style="transform-origin: 78px -18px;">
+                <circle cx="78" cy="-18" r="12" fill="#fff" stroke="#1648a8" stroke-width="2"/>
+                <circle cx="76" cy="-17" r="6.5" fill="#1648a8"/>
+                <circle cx="74" cy="-20" r="2.4" fill="#fff"/>
               </g>
-              <!-- 口（LED） -->
-              <rect x="34" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-              <rect x="44" y="-36" width="6" height="6" rx="3" fill="#22c55e" opacity=".6"/>
-              <rect x="54" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-              <rect x="64" y="-36" width="6" height="6" rx="3" fill="#22c55e" opacity=".6"/>
-              <rect x="74" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-              <!-- アンテナ -->
-              <rect x="57" y="-112" width="6" height="26" rx="3" fill="#475569"/>
-              <g class="prubot-anim-antenna">
-                <rect x="46" y="-124" width="28" height="18" rx="5" fill="#FFD700"/>
-                <rect x="50" y="-121" width="20" height="12" rx="4" fill="#fbbf24" opacity=".5"/>
+              <!-- ほっぺ（きらめき付き） -->
+              <ellipse cx="26" cy="-2" rx="9" ry="6" fill="#fda4af" opacity=".65"/>
+              <ellipse cx="94" cy="-2" rx="9" ry="6" fill="#fda4af" opacity=".65"/>
+              <g class="prubot-cheek-sparkle">
+                <path d="M20 -10 l1.6 3.4 3.4 1.6 -3.4 1.6 -1.6 3.4 -1.6 -3.4 -3.4 -1.6 3.4 -1.6Z" fill="#fff" opacity=".9"/>
+              </g>
+              <!-- にっこり口 -->
+              <path d="M44 6 Q60 17 76 6" stroke="#1648a8" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <!-- アンテナ（蓋つき箱型） -->
+              <rect x="54" y="-70" width="12" height="18" rx="3" fill="#7b93c9"/>
+              <g class="prubot-anim-antenna" style="transform-origin: 60px -82px;">
+                <rect x="38" y="-90" width="44" height="20" rx="6" fill="#FFD700"/>
+                <rect x="38" y="-95" width="44" height="8" rx="4" fill="#f0c419"/>
               </g>
               <!-- ネームプレート -->
-              <rect x="24" y="188" width="72" height="20" rx="10" fill="#FFD700"/>
-              <text x="60" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
+              <rect x="26" y="142" width="68" height="20" rx="10" fill="#FFD700"/>
+              <text x="60" y="156" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#0f2a6b">PRU-BOT</text>
             </svg>
           </div>
           <span class="mascot-name">PRU-BOT</span>
@@ -623,44 +632,47 @@
   <button class="prubot-btn prubot-anim-float" onclick="pruBotToggle()">
     <svg width="88" height="121" viewBox="-30 -10 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">
       <ellipse cx="60" cy="205" rx="42" ry="8" fill="#003087" opacity=".12"/>
-      <rect x="30" y="145" width="18" height="50" rx="9" fill="#0f172a"/>
-      <rect x="64" y="145" width="18" height="50" rx="9" fill="#0f172a"/>
-      <rect x="24" y="183" width="30" height="14" rx="7" fill="#1e293b"/>
-      <rect x="60" y="183" width="30" height="14" rx="7" fill="#1e293b"/>
-      <rect x="18" y="20" width="84" height="132" rx="20" fill="#0f172a"/>
-      <rect x="26" y="36" width="68" height="50" rx="10" fill="#1e293b"/>
-      <circle cx="60" cy="102" r="12" fill="#2563eb" opacity=".8"/>
-      <circle cx="60" cy="102" r="7" fill="#60a5fa"/>
-      <circle cx="60" cy="102" r="3" fill="#fff"/>
-      <rect x="-10" y="30" width="28" height="70" rx="14" fill="#0f172a"/>
-      <rect x="-14" y="94" width="36" height="22" rx="11" fill="#1e293b"/>
-      <rect x="102" y="30" width="28" height="70" rx="14" fill="#0f172a"/>
-      <rect x="98" y="94" width="36" height="22" rx="11" fill="#1e293b"/>
-      <rect x="46" y="2" width="28" height="22" rx="8" fill="#1e293b"/>
-      <rect x="8" y="-90" width="104" height="96" rx="28" fill="#0f172a"/>
-      <rect x="16" y="-76" width="88" height="48" rx="16" fill="#0ea5e9" opacity=".15"/>
-      <rect x="16" y="-76" width="88" height="48" rx="16" fill="none" stroke="#0ea5e9" stroke-width="1.5" opacity=".6"/>
-      <rect x="-2" y="-68" width="12" height="28" rx="6" fill="#1e293b"/>
-      <rect x="110" y="-68" width="12" height="28" rx="6" fill="#1e293b"/>
-      <g class="prubot-anim-eye">
-        <rect x="22" y="-68" width="30" height="20" rx="8" fill="#0ea5e9" opacity=".9"/>
-        <rect x="24" y="-66" width="26" height="16" rx="7" fill="#fff" opacity=".3"/>
+      <rect x="32" y="160" width="20" height="34" rx="10" fill="#1a4da0"/>
+      <rect x="68" y="160" width="20" height="34" rx="10" fill="#1a4da0"/>
+      <ellipse cx="42" cy="194" rx="20" ry="10" fill="#0f2a6b"/>
+      <ellipse cx="78" cy="194" rx="20" ry="10" fill="#0f2a6b"/>
+      <rect x="14" y="58" width="92" height="108" rx="34" fill="#1648a8"/>
+      <rect x="32" y="86" width="56" height="46" rx="14" fill="#fff" opacity=".95"/>
+      <rect x="42" y="96" width="36" height="24" rx="4" fill="#1648a8" opacity=".12"/>
+      <path d="M42 98 L60 110 L78 98" stroke="#1648a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
+      <circle cx="78" cy="118" r="11" fill="#22c55e"/>
+      <path d="M73 118 L76.5 121.5 L83 113" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <rect x="-8" y="70" width="26" height="56" rx="13" fill="#1648a8"/>
+      <circle cx="5" cy="130" r="15" fill="#1648a8"/>
+      <rect x="102" y="70" width="26" height="56" rx="13" fill="#1648a8"/>
+      <circle cx="115" cy="130" r="15" fill="#1648a8"/>
+      <rect x="44" y="38" width="32" height="24" rx="10" fill="#1648a8"/>
+      <ellipse cx="60" cy="-10" rx="58" ry="54" fill="#1648a8"/>
+      <circle cx="4" cy="-10" r="11" fill="#0f2a6b"/>
+      <circle cx="4" cy="-10" r="5.5" fill="#FFD700"/>
+      <circle cx="116" cy="-10" r="11" fill="#0f2a6b"/>
+      <circle cx="116" cy="-10" r="5.5" fill="#FFD700"/>
+      <ellipse cx="60" cy="-8" rx="44" ry="41" fill="#f4f8ff"/>
+      <g class="prubot-anim-eye" style="transform-origin: 42px -18px;">
+        <circle cx="42" cy="-18" r="12" fill="#fff" stroke="#1648a8" stroke-width="2"/>
+        <circle cx="44" cy="-17" r="6.5" fill="#1648a8"/>
+        <circle cx="46" cy="-20" r="2.4" fill="#fff"/>
       </g>
-      <g class="prubot-anim-eye">
-        <rect x="68" y="-68" width="30" height="20" rx="8" fill="#0ea5e9" opacity=".9"/>
-        <rect x="70" y="-66" width="26" height="16" rx="7" fill="#fff" opacity=".3"/>
+      <g class="prubot-anim-eye" style="transform-origin: 78px -18px;">
+        <circle cx="78" cy="-18" r="12" fill="#fff" stroke="#1648a8" stroke-width="2"/>
+        <circle cx="76" cy="-17" r="6.5" fill="#1648a8"/>
+        <circle cx="74" cy="-20" r="2.4" fill="#fff"/>
       </g>
-      <rect x="34" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-      <rect x="44" y="-36" width="6" height="6" rx="3" fill="#22c55e" opacity=".6"/>
-      <rect x="54" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-      <rect x="64" y="-36" width="6" height="6" rx="3" fill="#22c55e" opacity=".6"/>
-      <rect x="74" y="-36" width="6" height="6" rx="3" fill="#22c55e"/>
-      <rect x="57" y="-112" width="6" height="26" rx="3" fill="#475569"/>
-      <g class="prubot-anim-antenna">
-        <rect x="46" y="-124" width="28" height="18" rx="5" fill="#FFD700"/>
+      <ellipse cx="26" cy="-2" rx="9" ry="6" fill="#fda4af" opacity=".65"/>
+      <ellipse cx="94" cy="-2" rx="9" ry="6" fill="#fda4af" opacity=".65"/>
+      <path d="M44 6 Q60 17 76 6" stroke="#1648a8" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <rect x="54" y="-70" width="12" height="18" rx="3" fill="#7b93c9"/>
+      <g class="prubot-anim-antenna" style="transform-origin: 60px -82px;">
+        <rect x="38" y="-90" width="44" height="20" rx="6" fill="#FFD700"/>
+        <rect x="38" y="-95" width="44" height="8" rx="4" fill="#f0c419"/>
       </g>
-      <rect x="24" y="188" width="72" height="20" rx="10" fill="#FFD700"/>
-      <text x="60" y="202" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#003087">PRU-BOT</text>
+      <rect x="26" y="142" width="68" height="20" rx="10" fill="#FFD700"/>
+      <text x="60" y="156" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#0f2a6b">PRU-BOT</text>
     </svg>
   </button>
 </div>
