@@ -355,6 +355,34 @@
   .api-key-section summary:hover { color: var(--accent); }
   .api-key-inner { padding-top: 10px; }
   .info-box { background: #f0f6ff; border: 1px solid #93c5fd; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #1e40af; line-height: 1.6; margin-bottom: 10px; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,31,74,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 500; padding: 20px; backdrop-filter: blur(2px);
+  }
+  .modal-box {
+    background: var(--bg-surface); border-radius: var(--radius-xl);
+    border: 1.5px solid var(--border); border-top: 3px solid #FFD700;
+    width: 100%; max-width: 480px; max-height: 80vh;
+    display: flex; flex-direction: column; box-shadow: var(--shadow-md);
+    animation: card-in .22s ease;
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px; border-bottom: 1px solid var(--border);
+  }
+  .modal-header h3 { font-size: 15px; font-weight: 700; color: #003087; }
+  .modal-body { padding: 14px 22px 22px; overflow-y: auto; flex: 1; }
+  .trash-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 11px 10px; border-radius: var(--radius-sm);
+    transition: background .14s;
+  }
+  .trash-row:hover { background: var(--bg-hover); }
+  .trash-row-text .text { font-size: 13px; font-weight: 500; }
+  .trash-row-text .meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -372,7 +400,7 @@
     スパムくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.0.7</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.1.0</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -445,6 +473,14 @@
             <button onclick="loadRecent()">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               最近
+            </button>
+            <button onclick="openMailTrash()" title="メールゴミ箱">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              ゴミ箱
+            </button>
+            <button class="ghost" onclick="resetToHome()" title="検索結果を初期化">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              初期化
             </button>
           </div>
         </div>
@@ -547,7 +583,12 @@
               Todo一覧
               <span class="count-badge" id="todoCount">0</span>
             </div>
-            <button class="danger" style="font-size:11px; padding:5px 12px;" onclick="clearTodos()">全削除</button>
+            <div class="flex-row" style="gap:6px;">
+              <button class="ghost" style="font-size:11px; padding:5px 10px;" onclick="openTodoTrash()" title="Todoゴミ箱">
+                🗑️ <span id="todoTrashCount">0</span>
+              </button>
+              <button class="danger" style="font-size:11px; padding:5px 12px;" onclick="clearTodos()">全削除</button>
+            </div>
           </div>
           <div id="todoList"></div>
           <div id="todoEmpty" style="padding:24px 16px; text-align:center; color:var(--text-muted); font-size:12px;">
@@ -619,6 +660,17 @@
 </div>
 
 <div id="toast-container"></div>
+
+<!-- ── Trash Modal ── -->
+<div id="trashModal" class="modal-overlay hidden" onclick="if(event.target===this) closeTrashModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="trashModalTitle">ゴミ箱</h3>
+      <button class="ghost" onclick="closeTrashModal()" style="padding:6px;">✕</button>
+    </div>
+    <div id="trashModalBody" class="modal-body"></div>
+  </div>
+</div>
 
 <script>
 /* =========================================================
@@ -859,6 +911,16 @@ async function showApp() {
 /* =========================================================
    SEARCH
 ========================================================= */
+function resetToHome() {
+  document.getElementById('searchBox').value = '';
+  document.getElementById('detailView').classList.add('hidden');
+  document.getElementById('resultList').classList.remove('hidden');
+  document.getElementById('resultList').innerHTML = '';
+  currentThreadMessages = [];
+  window.threads_data = [];
+  toast('検索結果を初期化したで！');
+}
+
 async function doSearch() {
   const q = document.getElementById('searchBox').value.trim();
   if (!q) { toast('キーワードを入力してな！'); return; }
@@ -920,6 +982,55 @@ async function loadRecent() {
   }
 }
 
+function getHiddenThreadIds() {
+  return JSON.parse(localStorage.getItem('spamkun_hidden_threads') || '[]');
+}
+function saveHiddenThreadIds(ids) {
+  localStorage.setItem('spamkun_hidden_threads', JSON.stringify(ids));
+}
+
+function hideThread(conversationId) {
+  const ids = getHiddenThreadIds();
+  if (!ids.includes(conversationId)) ids.push(conversationId);
+  saveHiddenThreadIds(ids);
+  renderResults(window.threads_data || []);
+  toast('スレッドをゴミ箱に移したで！「ゴミ箱」から戻せるで');
+}
+
+function openMailTrash() {
+  const ids = getHiddenThreadIds();
+  const allThreads = window.threads_data || [];
+  const trashed = allThreads.filter(t => ids.includes(t.conversationId));
+  const modal = document.getElementById('trashModal');
+  const body = document.getElementById('trashModalBody');
+  document.getElementById('trashModalTitle').textContent = 'メールゴミ箱';
+
+  if (!trashed.length) {
+    body.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="empty-icon">🗑️</div><p>ゴミ箱は空やで！<br>（検索したスレッドのみ表示されるで）</p></div>`;
+  } else {
+    body.innerHTML = '';
+    trashed.forEach(thread => {
+      const row = document.createElement('div');
+      row.className = 'trash-row';
+      row.innerHTML = `
+        <div class="trash-row-text">
+          <div class="text">${escHtml(thread.subject || '（件名なしやで）')}</div>
+          <div class="meta">${thread.messages.length}通のスレッド</div>
+        </div>
+        <button class="success" style="font-size:11px; padding:6px 12px;">戻すで</button>`;
+      row.querySelector('button').onclick = () => {
+        const newIds = getHiddenThreadIds().filter(id => id !== thread.conversationId);
+        saveHiddenThreadIds(newIds);
+        renderResults(window.threads_data || []);
+        openMailTrash();
+        toast('スレッドを元に戻したで！', 'success');
+      };
+      body.appendChild(row);
+    });
+  }
+  modal.classList.remove('hidden');
+}
+
 function groupByThread(messages) {
   const map = new Map();
   for (const msg of messages) {
@@ -939,7 +1050,12 @@ function groupByThread(messages) {
 ========================================================= */
 function renderResults(threads) {
   const container = document.getElementById('resultList');
-  if (threads.length === 0) {
+  window.threads_data = threads;
+
+  const hiddenIds = JSON.parse(localStorage.getItem('spamkun_hidden_threads') || '[]');
+  const visibleThreads = threads.filter(t => !hiddenIds.includes(t.conversationId));
+
+  if (visibleThreads.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>結果がないで…</p></div>';
     return;
   }
@@ -949,11 +1065,12 @@ function renderResults(threads) {
   header.innerHTML = `<div class="section-title">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
     検索結果
-    <span class="count-badge">${threads.length}</span>
+    <span class="count-badge">${visibleThreads.length}</span>
   </div>`;
   container.appendChild(header);
 
-  threads.forEach((thread, idx) => {
+  visibleThreads.forEach((thread, idx) => {
+    const realIdx = threads.indexOf(thread);
     const latest = thread.messages[thread.messages.length - 1];
     const from = latest.from?.emailAddress?.name || latest.from?.emailAddress?.address || '不明';
     const toList = (latest.toRecipients || []).map(r => r.emailAddress?.name || r.emailAddress?.address).join(', ') || '不明';
@@ -978,14 +1095,12 @@ function renderResults(threads) {
       </div>
       <div class="result-summary">${escHtml(latest.bodyPreview || '')}</div>
       <div class="result-actions">
-        <span class="pill open" onclick="event.stopPropagation(); openThread(${idx}, threads_data)">開く</span>
+        <span class="pill todo" title="ゴミ箱へ" onclick="event.stopPropagation(); hideThread('${thread.conversationId}')">🗑️</span>
+        <span class="pill open" onclick="event.stopPropagation(); openThread(${realIdx}, threads_data)">開く</span>
       </div>`;
-    card.onclick = () => openThread(idx, threads_data);
+    card.onclick = () => openThread(realIdx, threads_data);
     container.appendChild(card);
   });
-
-  // Store for later use
-  window.threads_data = threads;
 }
 
 /* =========================================================
@@ -1191,12 +1306,16 @@ function renderTodos() {
   const list = document.getElementById('todoList');
   const empty = document.getElementById('todoEmpty');
   const count = document.getElementById('todoCount');
+  const trashCount = document.getElementById('todoTrashCount');
 
-  const active = todos.filter(t => !t.done);
-  const done = todos.filter(t => t.done);
+  const visible = todos.filter(t => !t.deleted);
+  const active = visible.filter(t => !t.done);
+  const done = visible.filter(t => t.done);
+  const trashed = todos.filter(t => t.deleted);
   count.textContent = active.length;
+  if (trashCount) trashCount.textContent = trashed.length;
 
-  if (todos.length === 0) {
+  if (visible.length === 0) {
     list.innerHTML = '';
     empty.style.display = '';
     return;
@@ -1233,21 +1352,59 @@ function makeTodoItem(td, isDone) {
   }
 
   item.querySelector('button:last-child').onclick = () => {
-    todos = todos.filter(t => t.id !== td.id);
+    td.deleted = true;
     saveTodos(); renderTodos();
+    toast('Todoをゴミ箱に移したで！「ゴミ箱」から戻せるで');
   };
 
   return item;
 }
 
 function clearTodos() {
-  if (!todos.length) { toast('Todoはあらへんで！'); return; }
-  todos = []; saveTodos(); renderTodos();
-  toast('Todo一覧を全部消したで！');
+  const visible = todos.filter(t => !t.deleted);
+  if (!visible.length) { toast('Todoはあらへんで！'); return; }
+  todos.forEach(t => { if (!t.deleted) t.deleted = true; });
+  saveTodos(); renderTodos();
+  toast('Todo一覧を全部ゴミ箱に移したで！');
 }
 
 function saveTodos() {
   localStorage.setItem('spamkun_todos', JSON.stringify(todos));
+}
+
+/* ── Todoゴミ箱 ── */
+function openTodoTrash() {
+  const trashed = todos.filter(t => t.deleted);
+  const modal = document.getElementById('trashModal');
+  const body = document.getElementById('trashModalBody');
+  document.getElementById('trashModalTitle').textContent = 'Todoゴミ箱';
+
+  if (!trashed.length) {
+    body.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="empty-icon">🗑️</div><p>ゴミ箱は空やで！</p></div>`;
+  } else {
+    body.innerHTML = '';
+    trashed.forEach(td => {
+      const row = document.createElement('div');
+      row.className = 'trash-row';
+      row.innerHTML = `
+        <div class="trash-row-text">
+          <div class="text">${escHtml(td.text)}</div>
+          <div class="meta">${escHtml(td.subject)}</div>
+        </div>
+        <button class="success" style="font-size:11px; padding:6px 12px;">戻すで</button>`;
+      row.querySelector('button').onclick = () => {
+        td.deleted = false;
+        saveTodos(); renderTodos(); openTodoTrash();
+        toast('Todoを元に戻したで！', 'success');
+      };
+      body.appendChild(row);
+    });
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeTrashModal() {
+  document.getElementById('trashModal').classList.add('hidden');
 }
 
 /* =========================================================
