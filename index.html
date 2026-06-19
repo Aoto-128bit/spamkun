@@ -250,13 +250,6 @@
   }
   .result:hover::before { background: linear-gradient(to bottom, #FFD700, #f59e0b); }
   .result-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; padding-right: 80px; line-height: 1.4; }
-  .source-badge {
-    display: inline-flex; align-items: center; gap: 3px;
-    font-size: 10.5px; font-weight: 700; padding: 2px 8px;
-    border-radius: 99px; vertical-align: middle; margin-right: 4px;
-  }
-  .source-badge.source-mail  { background: #dbeafe; color: #1d4ed8; }
-  .source-badge.source-teams { background: #ede9fe; color: #6d28d9; }
   .result-meta { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
   .result-meta .meta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
   .result-meta .meta-chip {
@@ -432,7 +425,7 @@
     スパミーくん
   </div>
   <span class="badge">Outlook連携 · AI要約 · Todo抽出するで！</span>
-  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.3.6</span>
+  <span class="badge" style="background:rgba(255,215,0,.2); border-color:rgba(255,215,0,.4); color:#FFD700;">v1.2.5</span>
   <div class="header-spacer"></div>
   <div class="header-user" id="headerUser" style="display:none;">
     <div class="avatar" id="headerAvatar">U</div>
@@ -770,7 +763,7 @@ async function startApp() {
   localStorage.setItem('spamkun_pkce_verifier', verifier);
 
   const redirectUri = location.origin + location.pathname;
-  const scope = 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read https://graph.microsoft.com/Chat.Read offline_access';
+  const scope = 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access';
   const authUrl = `https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?` +
     `client_id=${encodeURIComponent(clientId)}` +
     `&response_type=code` +
@@ -812,7 +805,7 @@ async function handleCallback() {
         redirect_uri: redirectUri,
         grant_type: 'authorization_code',
         code_verifier: verifier,
-        scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read https://graph.microsoft.com/Chat.Read offline_access'
+        scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access'
       })
     });
     const data = await res.json();
@@ -844,7 +837,7 @@ async function tryRefreshToken() {
         client_id: saved.clientId,
         refresh_token: refreshToken,
         grant_type: 'refresh_token',
-        scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read https://graph.microsoft.com/Chat.Read offline_access'
+        scope: 'https://graph.microsoft.com/Mail.Read https://graph.microsoft.com/User.Read offline_access'
       })
     });
     const data = await res.json();
@@ -857,27 +850,18 @@ async function tryRefreshToken() {
   } catch { return false; }
 }
 
-async function graphGet(pathOrUrl, _retried = false) {
+async function graphGet(pathOrUrl) {
   if (!accessToken) throw new Error('未認証');
   const url = pathOrUrl.startsWith('http') ? pathOrUrl : `https://graph.microsoft.com/v1.0${pathOrUrl}`;
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   if (res.status === 401) {
-    if (_retried) throw new Error('認証エラー: 再ログインしてな！');
     const ok = await tryRefreshToken();
     if (!ok) throw new Error('もう一回ログインしてな！');
-    return graphGet(pathOrUrl, true);
+    return graphGet(pathOrUrl);
   }
-  if (!res.ok) {
-    let errMsg = `Graph API error ${res.status}`;
-    try {
-      const errBody = await res.json();
-      if (errBody?.error?.message) errMsg = errBody.error.message;
-      else if (errBody?.error?.code) errMsg = errBody.error.code;
-    } catch {}
-    throw new Error(errMsg);
-  }
+  if (!res.ok) throw new Error(`Graph API error ${res.status}`);
   return res.json();
 }
 
@@ -904,120 +888,6 @@ async function graphGetAll(initialPath, maxResults = MAX_RESULTS) {
     results = results.slice(0, maxResults);
   }
   return { value: results, hasMore };
-}
-
-function isTeamsAuthError(msg) {
-  return msg && (
-    msg.includes('No authorization') ||
-    msg.includes('Insufficient') ||
-    msg.includes('Authorization') ||
-    msg.includes('認証エラー') ||
-    msg.includes('401') ||
-    msg.includes('403')
-  );
-}
-
-/* =========================================================
-   TEAMS CHAT（個人チャット連携）
-========================================================= */
-const TEAMS_MESSAGE_FETCH_LIMIT = 50; // 1チャットあたり遡って取得するメッセージ数
-
-// 自分のチャット一覧を取得するで（最大300件くらいまで）
-async function fetchTeamsChats() {
-  const data = await graphGetAll(`/me/chats?$top=50&$select=id,topic,chatType,lastUpdatedDateTime&$expand=members`, 300);
-  return data.value || [];
-}
-
-// 各チャットのメッセージを取得するで
-async function fetchChatMessages(chatId) {
-  try {
-    const data = await graphGet(`/me/chats/${chatId}/messages?$top=${TEAMS_MESSAGE_FETCH_LIMIT}`);
-    return data.value || [];
-  } catch (e) {
-    console.warn('Teamsメッセージ取得失敗(chatId=' + chatId + '):', e.message);
-    return [];
-  }
-}
-
-// HTML本文をプレーンテキストに変換するで（メール処理と同じロジック）
-function htmlToPlainText(html) {
-  if (!html) return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  tmp.querySelectorAll('style, script, head').forEach(el => el.remove());
-  tmp.querySelectorAll('br').forEach(el => el.replaceWith('\n'));
-  tmp.querySelectorAll('p, div, tr').forEach(el => el.prepend('\n'));
-  return (tmp.textContent || tmp.innerText || '')
-    .replace(/\n{3,}/g, '\n\n')
-    .replace(/[ \t]{2,}/g, ' ')
-    .trim();
-}
-
-// Teamsのチャット1件をOutlookのスレッドと同じ形に正規化するで
-function normalizeTeamsChat(chat, messages) {
-  const sortedMsgs = messages
-    .filter(m => m.body && (m.body.content || '').trim())
-    .sort((a, b) => new Date(a.createdDateTime) - new Date(b.createdDateTime));
-
-  const normalizedMsgs = sortedMsgs.map(m => {
-    const bodyText = m.body.contentType === 'html' ? htmlToPlainText(m.body.content) : (m.body.content || '');
-    const senderName = m.from?.user?.displayName || '不明';
-    return {
-      id: m.id,
-      subject: chat.topic || null,
-      from: { emailAddress: { name: senderName, address: '' } },
-      toRecipients: [],
-      receivedDateTime: m.createdDateTime,
-      conversationId: 'teams_' + chat.id,
-      bodyPreview: bodyText.slice(0, 140),
-      hasAttachments: (m.attachments || []).length > 0,
-      _fullBody: bodyText,
-      _source: 'teams'
-    };
-  });
-
-  // チャット名（topicが無ければメンバー名から作るで）
-  let chatName = chat.topic;
-  if (!chatName) {
-    const otherMembers = (chat.members || [])
-      .map(m => m.displayName)
-      .filter(Boolean);
-    chatName = otherMembers.length ? otherMembers.join(', ') : 'Teamsチャット';
-  }
-
-  return {
-    conversationId: 'teams_' + chat.id,
-    subject: chatName,
-    messages: normalizedMsgs,
-    _source: 'teams'
-  };
-}
-
-// Teamsチャットをキーワードで絞り込んで、スレッド配列（Outlookと同じ形）を返すで
-async function searchTeamsThreads(keyword) {
-  const chats = await fetchTeamsChats();
-  const threads = [];
-  const kw = (keyword || '').trim().toLowerCase();
-
-  // 直近更新されたチャットから順に処理（件数が多いと重いので上限を設けるで）
-  const targets = chats.slice(0, 40);
-
-  for (const chat of targets) {
-    const messages = await fetchChatMessages(chat.id);
-    if (!messages.length) continue;
-    const thread = normalizeTeamsChat(chat, messages);
-    if (!thread.messages.length) continue;
-
-    if (!kw) {
-      threads.push(thread);
-      continue;
-    }
-    // キーワード一致判定（件名 or 本文）
-    const hit = (thread.subject || '').toLowerCase().includes(kw) ||
-      thread.messages.some(m => (m._fullBody || '').toLowerCase().includes(kw));
-    if (hit) threads.push(thread);
-  }
-  return threads;
 }
 
 function logout() {
@@ -1106,45 +976,29 @@ async function doSearch() {
   currentPage = 1;
 
   try {
+    // Graph API: search messages（$topは1ページあたりの件数、最大999）
     const encoded = encodeURIComponent(q);
-
-    // OutlookとTeamsを同時に検索するで
-    let teamsErr = null;
-    const [mailResult, teamsThreads] = await Promise.all([
-      graphGetAll(`/me/messages?$search="${encoded}"&$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments`)
-        .catch(e => ({ value: [], hasMore: false, _error: e })),
-      searchTeamsThreads(q).catch(e => { console.warn('Teams検索失敗:', e.message); teamsErr = e.message; return []; })
-    ]);
+    const data = await graphGetAll(
+      `/me/messages?$search="${encoded}"&$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments`
+    );
 
     finishProgress();
-    if (teamsErr && !isTeamsAuthError(teamsErr)) {
-      toast('Teams取得失敗: ' + teamsErr, 'danger');
-    }
 
-    const mailMessages = mailResult.value || [];
-    const mailThreads = mailMessages.length ? groupByThread(mailMessages) : [];
-    const allThreads = [...mailThreads, ...teamsThreads];
-
-    if (allThreads.length === 0) {
+    if (!data.value || data.value.length === 0) {
       document.getElementById('resultList').innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🔍</div>
-          <p>「${escHtml(q)}」に一致するメール・チャットが見つかりませんでした</p>
+          <p>「${escHtml(q)}」に一致するメールが見つかりませんでした</p>
         </div>`;
       return;
     }
 
-    // 最新メッセージの日時で並び替え（メールとTeamsを混ぜて新しい順に）
-    allThreads.sort((a, b) => {
-      const aDate = new Date(a.messages[a.messages.length - 1]?.receivedDateTime || 0);
-      const bDate = new Date(b.messages[b.messages.length - 1]?.receivedDateTime || 0);
-      return bDate - aDate;
-    });
-
-    renderResults(allThreads);
+    // Group by conversationId (thread)
+    const threads = groupByThread(data.value);
+    renderResults(threads);
     recordSearchKeyword(q);
-    const capNote = mailResult.hasMore ? `（メールは上限${MAX_RESULTS}件まで表示してるで）` : '';
-    toast(`メール${mailThreads.length}件・Teams${teamsThreads.length}件のスレッドが見つかったで！${capNote}`, 'success');
+    const capNote = data.hasMore ? `（上限${MAX_RESULTS}件まで表示してるで）` : '';
+    toast(`${data.value.length}件のメールが見つかったで！（${threads.length}スレッド）${capNote}`, 'success');
 
   } catch (e) {
     finishProgress();
@@ -1160,35 +1014,18 @@ async function loadRecent() {
   currentPage = 1;
 
   try {
-    let teamsErr = null;
-    const [mailResult, teamsThreads] = await Promise.all([
-      graphGetAll(`/me/messages?$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments&$orderby=receivedDateTime desc`)
-        .catch(e => ({ value: [], hasMore: false })),
-      searchTeamsThreads('').catch(e => { console.warn('Teams取得失敗:', e.message); teamsErr = e.message; return []; })
-    ]);
-
+    const data = await graphGetAll(
+      `/me/messages?$top=999&$select=id,subject,from,toRecipients,receivedDateTime,conversationId,bodyPreview,hasAttachments&$orderby=receivedDateTime desc`
+    );
     finishProgress();
-    if (teamsErr && !isTeamsAuthError(teamsErr)) {
-      toast('Teams取得失敗: ' + teamsErr, 'danger');
-    }
-    const mailMessages = mailResult.value || [];
-    const mailThreads = mailMessages.length ? groupByThread(mailMessages) : [];
-    const allThreads = [...mailThreads, ...teamsThreads];
-
-    if (allThreads.length === 0) {
-      document.getElementById('resultList').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>メール・チャットが見つからへんかったで</p></div>';
+    if (!data.value || data.value.length === 0) {
+      document.getElementById('resultList').innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>メールが見つからへんかったで</p></div>';
       return;
     }
-
-    allThreads.sort((a, b) => {
-      const aDate = new Date(a.messages[a.messages.length - 1]?.receivedDateTime || 0);
-      const bDate = new Date(b.messages[b.messages.length - 1]?.receivedDateTime || 0);
-      return bDate - aDate;
-    });
-
-    renderResults(allThreads);
-    const capNote = mailResult.hasMore ? `（メールは上限${MAX_RESULTS}件まで表示してるで）` : '';
-    toast(`最近のメール${mailThreads.length}件・Teams${teamsThreads.length}件を表示してるで！${capNote}`);
+    const threads = groupByThread(data.value);
+    renderResults(threads);
+    const capNote = data.hasMore ? `（上限${MAX_RESULTS}件まで表示してるで）` : '';
+    toast(`最近のメール ${data.value.length}件を表示してるで！${capNote}`);
   } catch (e) {
     finishProgress();
     toast('読み込みでコケてしもた: ' + e.message, 'danger');
@@ -1281,7 +1118,7 @@ function groupByThread(messages) {
   const map = new Map();
   for (const msg of messages) {
     const key = msg.conversationId || msg.id;
-    if (!map.has(key)) map.set(key, { conversationId: key, subject: msg.subject, messages: [], _source: 'mail' });
+    if (!map.has(key)) map.set(key, { conversationId: key, subject: msg.subject, messages: [] });
     map.get(key).messages.push(msg);
   }
   // Sort messages within each thread by date
@@ -1330,23 +1167,19 @@ function renderResults(threads, page = 1) {
     const date = new Date(latest.receivedDateTime);
     const dateStr = date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     const count = thread.messages.length;
-    const isTeams = thread._source === 'teams';
-    const sourceBadge = isTeams
-      ? '<span class="source-badge source-teams">💬 Teams</span>'
-      : '<span class="source-badge source-mail">📧 メール</span>';
 
     const card = document.createElement('div');
     card.className = 'result';
     card.style.cssText = 'animation: card-in .35s cubic-bezier(.22,1,.36,1) both;';
     card.style.animationDelay = `${idx * 40}ms`;
     card.innerHTML = `
-      <div class="result-title">${sourceBadge} ${escHtml(thread.subject || '（件名なしやで）')}</div>
+      <div class="result-title">${escHtml(thread.subject || '（件名なしやで）')}</div>
       <div class="result-meta">
         <div class="meta-row">
           <span class="meta-chip">📨 ${escHtml(from)}</span>
-          ${isTeams ? '' : `<span class="meta-chip">📬 ${escHtml(toList)}</span>`}
+          <span class="meta-chip">📬 ${escHtml(toList)}</span>
           <span class="meta-chip">🕐 ${dateStr}</span>
-          <span class="meta-chip">🔢 ${count}通</span>
+          <span class="meta-chip">💬 ${count}通</span>
           ${latest.hasAttachments ? '<span class="meta-chip">📎 添付あり</span>' : ''}
         </div>
       </div>
@@ -1412,11 +1245,7 @@ async function openThread(idx, threads) {
   document.getElementById('resultList').classList.add('hidden');
   const detail = document.getElementById('detailView');
   detail.classList.remove('hidden');
-  const isTeams = thread._source === 'teams';
-  const badgeHtml = isTeams
-    ? '<span class="source-badge source-teams">💬 Teams</span>'
-    : '<span class="source-badge source-mail">📧 メール</span>';
-  document.getElementById('detailTitle').innerHTML = badgeHtml + ' ' + escHtml(thread.subject || '（件名なしやで）');
+  document.getElementById('detailTitle').textContent = thread.subject || '（件名なしやで）';
 
   const content = document.getElementById('detailContent');
   content.innerHTML = '';
@@ -1455,33 +1284,30 @@ async function renderMessage(msg, container) {
   const toList = (msg.toRecipients || []).map(r => r.emailAddress?.name || r.emailAddress?.address).join(', ');
   const date = new Date(msg.receivedDateTime);
   const dateStr = date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  const isTeams = msg._source === 'teams';
 
-  // Fetch full body if needed（Teamsは正規化時点で既に取得済みやからスキップするで）
-  let body = msg._fullBody || msg.bodyPreview || '';
-  if (!isTeams) {
-    try {
-      const full = await graphGet(`/me/messages/${msg.id}?$select=body`);
-      if (full.body?.content) {
-        if (full.body.contentType === 'html') {
-          // HTMLメールはテキスト変換するで
-          const tmp = document.createElement('div');
-          tmp.innerHTML = full.body.content;
-          // style/script/headタグを除去
-          tmp.querySelectorAll('style, script, head').forEach(el => el.remove());
-          // 改行タグをスペースに
-          tmp.querySelectorAll('br').forEach(el => el.replaceWith('\n'));
-          tmp.querySelectorAll('p, div, tr').forEach(el => el.prepend('\n'));
-          body = (tmp.textContent || tmp.innerText || body)
-            .replace(/\n{3,}/g, '\n\n')  // 連続改行を圧縮
-            .replace(/[ \t]{2,}/g, ' ')   // 連続スペースを圧縮
-            .trim();
-        } else {
-          body = full.body.content;
-        }
+  // Fetch full body if needed
+  let body = msg.bodyPreview || '';
+  try {
+    const full = await graphGet(`/me/messages/${msg.id}?$select=body`);
+    if (full.body?.content) {
+      if (full.body.contentType === 'html') {
+        // HTMLメールはテキスト変換するで
+        const tmp = document.createElement('div');
+        tmp.innerHTML = full.body.content;
+        // style/script/headタグを除去
+        tmp.querySelectorAll('style, script, head').forEach(el => el.remove());
+        // 改行タグをスペースに
+        tmp.querySelectorAll('br').forEach(el => el.replaceWith('\n'));
+        tmp.querySelectorAll('p, div, tr').forEach(el => el.prepend('\n'));
+        body = (tmp.textContent || tmp.innerText || body)
+          .replace(/\n{3,}/g, '\n\n')  // 連続改行を圧縮
+          .replace(/[ \t]{2,}/g, ' ')   // 連続スペースを圧縮
+          .trim();
+      } else {
+        body = full.body.content;
       }
-    } catch {}
-  }
+    }
+  } catch {}
 
   // Store body on msg for AI
   msg._fullBody = body;
@@ -1494,7 +1320,7 @@ async function renderMessage(msg, container) {
       <div class="sender">${escHtml(from)}</div>
     </div>
     <div class="mail-meta">
-      ${isTeams ? '' : `<span>To: ${escHtml(toList)}</span>`}
+      <span>To: ${escHtml(toList)}</span>
       <span>📅 ${dateStr}</span>
       ${msg.hasAttachments ? '<span>📎 添付あり</span>' : ''}
     </div>
